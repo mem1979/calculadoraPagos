@@ -13,12 +13,49 @@
             ambito="global"/>
     -->
     
-    <!-- Controlador:
-    <controlador nombre="Profesor">
-        <hereda-de controlador="Typical"/>
-        <accion nombre="new" icono="library-plus" atajo-de-teclado="Control N" 
-                clase="acciones.CrearProfesor"/>        
+    <controlador nombre="MiTypical">
+		<hereda-de controlador="CRUD"/>
+		<hereda-de controlador="Print"/>
+</controlador>
+
+<controlador nombre="MiTypicalNoResetNoNavNoImport">
+  <hereda-de controlador="MiTypical" acciones-excluidas="refresh"/>
+       	<accion  nombre="new" 
+       			 clase="org.openxava.actions.NewAction"
+		         imagen="new.gif"
+		         icono="library-plus"
+		         atajo-de-teclado="Control N"
+		         disponible-en-nuevo="false"
+		         pierde-datos-cambiados="true">
+		         <poner propiedad="restoreModel" valor="true"/>			
+		</accion>
+		<accion nombre="save" 
+            modo="detail" confirmar="true" 
+            clase="org.openxava.actions.SaveAction"
+            icono="content-save"
+            disponible-en-nuevo="true"
+            por-defecto="si-posible"
+            atajo-de-teclado="Control S">
+        	<poner propiedad="resetAfter" valor="false" />
+        </accion>
+</controlador>
+    
+   
+    <controlador nombre="Registradora">
+        
+        <accion nombre="Registrar Pagos y Actualizar Caja" icono="cash-register"
+         atajo-de-teclado="Control N" modo="detail" 
+                clase="com.sta.cajadepagos.acciones.EjecutarEstrategiaPagosActualizarCajaAction"> 
+        </accion>
+        
+      <accion nombre ="new" 
+      		clase="org.openxava.actions.NewAction"
+			icono="library-plus"
+			atajo-de-teclado="Control N"
+			disponible-en-nuevo="false">
+	  </accion>       
+                     
     </controlador>
-    -->
+    
     
 </controladores>

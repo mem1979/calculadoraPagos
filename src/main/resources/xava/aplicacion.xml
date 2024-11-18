@@ -9,16 +9,9 @@
 	controlador en <modulo-defecto/> 
 	-->
 	<modulo-defecto>		  
-		<controlador nombre="Typical"/>		
+		<controlador nombre="MiTypicalNoResetNoNavNoImport"/>		
 	</modulo-defecto>
 	
-	<!--
-	Podemos definir módulos adicionales, por ejemplo: 	
-	<modulo nombre="ProfesorSoloLectura">
-		<modelo nombre="Profesor"/>
-		<controlador nombre="Print"/>
-	</modulo>		
-	-->	  
-		
+	
 </aplicacion>
 
