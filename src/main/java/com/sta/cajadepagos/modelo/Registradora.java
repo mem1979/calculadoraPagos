@@ -14,16 +14,16 @@ import com.sta.cajadepagos.enums.*;
 
 import lombok.*;
 
-@View(members =  
-"caja," +
+@View(members = "caja," +
 				"fechaHora;" +
 				"totalSaldo;" +
 				"totalCantidad;" +
-"RegistroDePagos [;" +
+
+"RegistroDePagos {;" +
 				"estrategiaPagos;" +
 				"importePagos, cantidadPagos, montoTotalPagos; " +
-				"];" +
-"detallePagos"
+				"detallePagos;" +
+				"}" 
 		)
 
 @Tab(properties = "fechaHora, importePagos, cantidadPagos, montoTotalPagos",
@@ -34,6 +34,7 @@ defaultOrder = "${fechaHora} desc")
 @Entity
 @Getter @Setter
 public class Registradora extends Identifiable {
+
 
 	@Required
     @DateTime
@@ -66,9 +67,12 @@ public class Registradora extends Identifiable {
     @OneToMany(mappedBy = "registradora")
     @OrderColumn
     @ListProperties("denominacion.nombre, cantidad, total")
+    @SearchListTab("sinNull")
     private List<Caja> caja;
 
     @Enumerated(EnumType.STRING)
+    @LabelFormat(LabelFormatType.SMALL)
+    @Required
     private EstrategiaPagos estrategiaPagos;
 
     @LargeDisplay(icon = "cash-multiple")
@@ -120,7 +124,7 @@ public class Registradora extends Identifiable {
         }
     }
 
-    @TextArea
+    @HtmlText(simple=true)
     @Depends("cantidadPagos,importePagos,estrategiaPagos")
     public String getDetallePagos() {
         if (cantidadPagos <= 0 || importePagos == null || importePagos.compareTo(BigDecimal.ZERO) <= 0) {
