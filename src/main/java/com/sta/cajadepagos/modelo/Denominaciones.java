@@ -27,6 +27,7 @@ public class Denominaciones extends Identifiable {
 
     @Money
     @DefaultValueCalculator(value = BigDecimalCalculator.class)
+    @Required
     private BigDecimal valor;
 
     /**

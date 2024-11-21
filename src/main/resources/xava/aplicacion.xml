@@ -14,5 +14,13 @@
 	
 
 	
+	<modulo nombre="CajaAuditoria">
+   		<var-entorno nombre="XAVA_LIST_ACTION" valor=""/>    <!-- 1  Nuevo en v2.0.4 -->
+    	<modelo nombre="CajaAuditoria"/>
+    	<controlador nombre="Print"/>
+	</modulo>
+	
+
+	
 </aplicacion>
 

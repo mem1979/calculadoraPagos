@@ -2,13 +2,12 @@ package com.sta.cajadepagos.calculadores;
 
 import org.openxava.calculators.*;
 
-public class DenominacionPorDefectoCalculator implements ICalculator {
+public class UsuarioPorDefectoCalculator implements ICalculator {
 
     private static final long serialVersionUID = 1L;
 
     @Override
     public Object calculate() throws Exception {
-      //Si se encuentra una denominación, devuelve una cadena vacía
-            return ""; 
+		 return org.openxava.util.Users.getCurrent() != null ? org.openxava.util.Users.getCurrent() : "No Registrado";
     }
 }

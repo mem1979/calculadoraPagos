@@ -5,9 +5,9 @@ import java.util.*;
 
 import javax.persistence.*;
 
+import org.hibernate.envers.*;
 import org.openxava.annotations.*;
 import org.openxava.calculators.*;
-import org.openxava.jpa.*;
 import org.openxava.model.*;
 
 import com.sta.cajadepagos.enums.*;
@@ -15,44 +15,40 @@ import com.sta.cajadepagos.enums.*;
 import lombok.*;
 
 @View(members = "caja," +
-				"fechaHora;" +
-				"totalSaldo;" +
-				"totalCantidad;" +
-
-"RegistroDePagos {;" +
-				"estrategiaPagos;" +
-				"importePagos, cantidadPagos, montoTotalPagos; " +
-				"detallePagos;" +
-				"}" 
-		)
-
+        "fechaHora;" +
+       "totalSaldo;" +
+        "totalCantidad;" +
+        "RegistroDePagos {;" +
+        "estrategiaPagos;" +
+        "importePagos, cantidadPagos, montoTotalPagos; " +
+        "detallePagos;" +
+        "}"
+)
 @Tab(properties = "fechaHora, importePagos, cantidadPagos, montoTotalPagos",
-editors ="List, Charts",
-defaultOrder = "${fechaHora} desc")
-
-
+        editors = "List, Charts",
+        defaultOrder = "${fechaHora} desc")
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 public class Registradora extends Identifiable {
 
-
-	@Required
+    @Required
     @DateTime
     @ReadOnly
     @LabelFormat(LabelFormatType.SMALL)
     @DefaultValueCalculator(CurrentDateCalculator.class)
     private Date fechaHora;
 
-	@LabelFormat(LabelFormatType.SMALL)
+    @LabelFormat(LabelFormatType.SMALL)
     private int cantidadPagos;
 
     @Money
     @LabelFormat(LabelFormatType.SMALL)
     private BigDecimal importePagos;
-    
+
     @Money
     @LabelFormat(LabelFormatType.SMALL)
-    @Depends("importePagos, cantidadPagos") // Asegura que se recalcula al cambiar estas propiedades
+    @Depends("importePagos, cantidadPagos")
     public BigDecimal getMontoTotalPagos() {
         if (importePagos == null || cantidadPagos <= 0) {
             return BigDecimal.ZERO;
@@ -60,14 +56,16 @@ public class Registradora extends Identifiable {
         return importePagos.multiply(BigDecimal.valueOf(cantidadPagos));
     }
 
-    @NoDefaultActions
-    @RemoveAction("")
+   @NoDefaultActions
+   @RemoveAction("")
     @NewAction("")
-    @DeleteSelectedAction("") 
+    @DeleteSelectedAction("")
     @OneToMany(mappedBy = "registradora")
+ // @JsonIgnore // Evita serialización de la lista de cajas para prevenir ciclos.
     @OrderColumn
     @ListProperties("denominacion.nombre, cantidad, total")
     @SearchListTab("sinNull")
+    @NotAudited
     private List<Caja> caja;
 
     @Enumerated(EnumType.STRING)
@@ -75,32 +73,28 @@ public class Registradora extends Identifiable {
     @Required
     private EstrategiaPagos estrategiaPagos;
 
+    @Money
     @LargeDisplay(icon = "cash-multiple")
-    public int getTotalCantidad() {
-        try {
-            return XPersistence.getManager()
-                .createQuery("SELECT COALESCE(SUM(c.cantidad), 0) FROM Caja c", Long.class)
-                .getSingleResult()
-                .intValue();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0; // En caso de error
+    public BigDecimal getTotalSaldo() {
+        if (caja == null || caja.isEmpty()) {
+            return BigDecimal.ZERO;
         }
+        return caja.stream()
+                .map(Caja::getTotalGeneral)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    @Money
-    @LargeDisplay
-    public BigDecimal getTotalSaldo() {
-        try {
-            return XPersistence.getManager()
-                .createQuery("SELECT COALESCE(SUM(c.total), 0) FROM Caja c", BigDecimal.class)
-                .getSingleResult();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return BigDecimal.ZERO; // En caso de error
+    @LargeDisplay(icon = "cash-multiple")
+    public int getTotalCantidad() {
+        if (caja == null || caja.isEmpty()) {
+            return 0;
         }
-    }
-    
+        return caja.stream()
+                .mapToInt(Caja::getCantidad)
+                .sum();
+    } 
+
     public void ejecutarEstrategiaPagos() {
         if (estrategiaPagos == null) {
             throw new IllegalArgumentException("Debe seleccionar una estrategia de pagos.");
@@ -124,7 +118,7 @@ public class Registradora extends Identifiable {
         }
     }
 
-    @HtmlText(simple=true)
+    @HtmlText(simple = true)
     @Depends("cantidadPagos,importePagos,estrategiaPagos")
     public String getDetallePagos() {
         if (cantidadPagos <= 0 || importePagos == null || importePagos.compareTo(BigDecimal.ZERO) <= 0) {
@@ -138,9 +132,8 @@ public class Registradora extends Identifiable {
         StringBuilder detalle = new StringBuilder();
         detalle.append(String.format("Importe por pago: %s\n", importePagos));
         detalle.append(String.format("Cantidad de pagos: %d\n", cantidadPagos));
-        detalle.append(String.format("Importe Total a Pagar: %s\n", getMontoTotalPagos())); // Agregar el total de pagos
-     //   detalle.append(String.format("Estrategia seleccionada: %s\n", estrategiaPagos.getEstrategiaPagos()));
-        
+        detalle.append(String.format("Importe Total a Pagar: %s\n", getMontoTotalPagos()));
+
         switch (estrategiaPagos) {
             case MAYOR_CANTIDAD:
                 detalle.append(ejecutarMayorCantidad());
@@ -162,82 +155,47 @@ public class Registradora extends Identifiable {
     }
 
     private String ejecutarMayorCantidad() {
-        StringBuilder detalle = new StringBuilder("Estrategia: Mayor Cantidad de Billetes\n");
-        Map<String, Integer> cantidadesDisponibles = inicializarCantidadesDisponibles();
-
-        // Ordenamos las cajas por cantidad disponible en orden descendente
-        caja.sort(Comparator.comparing(Caja::getCantidad, Comparator.reverseOrder()));
-
-        // Iteramos por cada pago
-        for (int i = 1; i <= cantidadPagos; i++) {
-            detalle.append(String.format("Distribución para el pago %d:\n", i));
-            BigDecimal montoRestante = importePagos;
-
-            // Intentamos cubrir el monto restante con las denominaciones disponibles
-            for (Caja cajaItem : caja) {
-                String nombreDenominacion = cajaItem.getDenominacion().getNombre();
-                BigDecimal valorDenominacion = cajaItem.getDenominacion().getValor();
-                int cantidadDisponible = cantidadesDisponibles.getOrDefault(nombreDenominacion, 0);
-
-                if (cantidadDisponible > 0 && montoRestante.compareTo(BigDecimal.ZERO) > 0) {
-                    // Calculamos cuántos billetes de esta denominación se necesitan
-                    int billetesRequeridos = montoRestante.divide(valorDenominacion, 0, RoundingMode.DOWN).intValue();
-                    int billetesUtilizados = Math.min(billetesRequeridos, cantidadDisponible);
-
-                    // Actualizamos el monto restante y las cantidades disponibles
-                    montoRestante = montoRestante.subtract(valorDenominacion.multiply(BigDecimal.valueOf(billetesUtilizados)));
-                    cantidadesDisponibles.put(nombreDenominacion, cantidadDisponible - billetesUtilizados);
-
-                    if (billetesUtilizados > 0) {
-                        detalle.append(String.format("  Denominación %s: %d billetes utilizados\n", nombreDenominacion, billetesUtilizados));
-                    }
-                }
-            }
-
-            // Verificamos si no se pudo cubrir el monto restante
-            if (montoRestante.compareTo(BigDecimal.ZERO) > 0) {
-                detalle.append(String.format("  No se pudo cubrir el monto restante: %s\n", montoRestante));
-            }
-        }
-
-        return detalle.toString();
+        return ejecutarEstrategia(
+                Comparator.comparing(Caja::getCantidad, Comparator.reverseOrder()),
+                "Mayor Cantidad de Billetes"
+        );
     }
 
     private String ejecutarMayorValor() {
-        StringBuilder detalle = new StringBuilder("Estrategia: Mayor Valor de Billetes\n");
-        Map<String, Integer> cantidadesDisponibles = inicializarCantidadesDisponibles();
-        caja.sort(Comparator.comparing(c -> c.getDenominacion().getValor(), Comparator.reverseOrder()));
-        distribuirBilletes(detalle, cantidadesDisponibles);
-        return detalle.toString();
+        return ejecutarEstrategia(
+                Comparator.comparing(c -> c.getDenominacion().getValor(), Comparator.reverseOrder()),
+                "Mayor Valor de Billetes"
+        );
     }
 
     private String ejecutarMenorValor() {
-        StringBuilder detalle = new StringBuilder("Estrategia: Menor Valor de Billetes\n");
-        Map<String, Integer> cantidadesDisponibles = inicializarCantidadesDisponibles();
-        caja.sort(Comparator.comparing(c -> c.getDenominacion().getValor()));
-        distribuirBilletes(detalle, cantidadesDisponibles);
-        return detalle.toString();
+        return ejecutarEstrategia(
+                Comparator.comparing(c -> c.getDenominacion().getValor()),
+                "Menor Valor de Billetes"
+        );
     }
 
     private String ejecutarDistribucionEquitativa() {
         StringBuilder detalle = new StringBuilder("Estrategia: Distribución Equitativa\n");
-        Map<String, Integer> cantidadesDisponibles = inicializarCantidadesDisponibles();
+        validarCaja();
+
+        BigDecimal montoPorPago = importePagos.divide(BigDecimal.valueOf(cantidadPagos), RoundingMode.DOWN);
 
         for (int i = 1; i <= cantidadPagos; i++) {
             detalle.append(String.format("Distribución para el pago %d:\n", i));
-            BigDecimal montoRestante = importePagos;
+            BigDecimal montoRestante = montoPorPago;
 
             for (Caja cajaItem : caja) {
                 String nombreDenominacion = cajaItem.getDenominacion().getNombre();
                 BigDecimal valorDenominacion = cajaItem.getDenominacion().getValor();
-                int cantidadDisponible = cantidadesDisponibles.getOrDefault(nombreDenominacion, 0);
+                int cantidadDisponible = cajaItem.getCantidad();
 
                 if (cantidadDisponible > 0) {
                     int billetesRequeridos = montoRestante.divide(valorDenominacion, 0, RoundingMode.DOWN).intValue();
                     int billetesUtilizados = Math.min(billetesRequeridos, cantidadDisponible);
 
                     montoRestante = montoRestante.subtract(valorDenominacion.multiply(BigDecimal.valueOf(billetesUtilizados)));
-                    cantidadesDisponibles.put(nombreDenominacion, cantidadDisponible - billetesUtilizados);
+                    cajaItem.setCantidad(cantidadDisponible - billetesUtilizados);
 
                     if (billetesUtilizados > 0) {
                         detalle.append(String.format("  Denominación %s: %d billetes utilizados\n", nombreDenominacion, billetesUtilizados));
@@ -257,17 +215,12 @@ public class Registradora extends Identifiable {
         return detalle.toString();
     }
 
-    private Map<String, Integer> inicializarCantidadesDisponibles() {
-        Map<String, Integer> cantidadesDisponibles = new HashMap<>();
-        for (Caja cajaItem : caja) {
-            if (cajaItem.getDenominacion() != null) {
-                cantidadesDisponibles.put(cajaItem.getDenominacion().getNombre(), cajaItem.getCantidad());
-            }
-        }
-        return cantidadesDisponibles;
-    }
+    private String ejecutarEstrategia(Comparator<Caja> comparator, String estrategia) {
+        validarCaja();
+        StringBuilder detalle = new StringBuilder("Estrategia: " + estrategia + "\n");
 
-    private void distribuirBilletes(StringBuilder detalle, Map<String, Integer> cantidadesDisponibles) {
+        caja.sort(comparator);
+
         for (int i = 1; i <= cantidadPagos; i++) {
             detalle.append(String.format("Distribución para el pago %d:\n", i));
             BigDecimal montoRestante = importePagos;
@@ -275,13 +228,13 @@ public class Registradora extends Identifiable {
             for (Caja cajaItem : caja) {
                 String nombreDenominacion = cajaItem.getDenominacion().getNombre();
                 BigDecimal valorDenominacion = cajaItem.getDenominacion().getValor();
-                int cantidadDisponible = cantidadesDisponibles.getOrDefault(nombreDenominacion, 0);
+                int cantidadDisponible = cajaItem.getCantidad();
 
                 int billetesRequeridos = montoRestante.divide(valorDenominacion, 0, RoundingMode.DOWN).intValue();
                 int billetesUtilizados = Math.min(billetesRequeridos, cantidadDisponible);
 
                 montoRestante = montoRestante.subtract(valorDenominacion.multiply(BigDecimal.valueOf(billetesUtilizados)));
-                cantidadesDisponibles.put(nombreDenominacion, cantidadDisponible - billetesUtilizados);
+                cajaItem.setCantidad(cantidadDisponible - billetesUtilizados);
 
                 if (billetesUtilizados > 0) {
                     detalle.append(String.format("  Denominación %s: %d billetes utilizados\n", nombreDenominacion, billetesUtilizados));
@@ -294,6 +247,19 @@ public class Registradora extends Identifiable {
 
             if (montoRestante.compareTo(BigDecimal.ZERO) > 0) {
                 detalle.append(String.format("  No se pudo cubrir el monto restante: %s\n", montoRestante));
+            }
+        }
+
+        return detalle.toString();
+    }
+
+    private void validarCaja() {
+        if (caja == null || caja.isEmpty()) {
+            throw new IllegalStateException("No hay datos disponibles en la caja para realizar pagos.");
+        }
+        for (Caja item : caja) {
+            if (item.getDenominacion() == null || item.getCantidad() <= 0) {
+                throw new IllegalStateException("La caja contiene datos inválidos (denominación nula o cantidad inválida).");
             }
         }
     }

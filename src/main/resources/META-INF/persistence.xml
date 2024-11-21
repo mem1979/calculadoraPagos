@@ -22,6 +22,13 @@
     	<class>com.openxava.naviox.model.User</class>
         <properties>
             <property name="javax.persistence.schema-generation.database.action" value="update"/>
+            
+            
+	    <!-- Configuración para habilitar la estrategia de validez en la auditoría -->
+		    <property name="hibernate.hbm2ddl.auto" value="update" />
+		    <property name="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.ValidityAuditStrategy" />
+		    <!--<property name="org.hibernate.envers.audit_strategy_validity_store_revend_timestamp" value="true" /> -->
+   
         </properties>
     </persistence-unit>
                     
