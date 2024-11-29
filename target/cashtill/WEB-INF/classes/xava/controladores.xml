@@ -1,0 +1,68 @@
+<?xml version = "1.0" encoding = "ISO-8859-1"?>
+
+<!DOCTYPE controladores SYSTEM "dtds/controladores.dtd">
+
+<controladores>
+    
+    <!-- Variable de entorno: 
+    <var-entorno nombre="cashtill_ANYO_DEFECTO" valor="2015"/>
+    -->
+    
+    <!-- Objeto de sesión:
+    <Objeto nombre="cashtill_anyoActivo" clase="java.lang.Integer" valor="2015" 
+            ambito="global"/>
+    -->
+    
+    <!-- Controlador:
+    <controlador nombre="Profesor">
+        <hereda-de controlador="Typical"/>
+        <accion nombre="new" icono="library-plus" atajo-de-teclado="Control N" 
+                clase="acciones.CrearProfesor"/>        
+    </controlador>
+    -->
+    
+    <controlador nombre="CajaRegistradora">
+        <hereda-de controlador="Print"/>
+	        <accion nombre="INGRESO DE CAJA / COBROS" icono="cash-plus" modo="list"
+	      	  clase="com.sta.cashtill.acciones.CajaEntradaAction">
+	       </accion>
+	       <accion nombre="SALIDA DE CAJA / PAGOS" icono="cash-minus" modo="list"
+	      	  clase="com.sta.cashtill.acciones.CajaSalidaAction">
+	       </accion>  
+    </controlador>
+    
+    <controlador nombre="Caja">
+        <hereda-de controlador="Print"/>
+	        <accion nombre="NuevoBillete" icono="cash-plus" modo="list"
+	      	  	clase="com.sta.cashtill.acciones.CajaNuevoBilleteAction">
+	       </accion>
+	       <accion nombre="AgregarNuevoBillete" icono="cash-plus" modo="detail"
+	       		clase="org.openxava.actions.SaveAction">
+	       </accion>
+	</controlador>
+    
+    <controlador nombre="MovimientoCajaCreation">
+		 <hereda-de controlador="NewCreation"/>
+		 <accion nombre="new" oculta="true"
+			 clase="com.sta.cashtill.acciones.CategoriaCrearAction">
+		 </accion>
+	</controlador>
+	 <controlador nombre="MovimientoCajaModification">
+		 <hereda-de controlador="Modification"/>
+		 <accion nombre="search" oculta="true"
+			 clase="com.sta.cashtill.acciones.CategoriaEditarAction">
+		 </accion>
+	</controlador>
+	
+	 <controlador nombre="MovimientoCaja">
+		 <accion nombre="ActualizarCaja" 
+			 clase="com.sta.cashtill.acciones.ActualizarCajaDesdeRegistradoraAction">
+		 </accion>
+		 <accion nombre="cancel" 
+			clase="org.openxava.actions.CancelDialogAction">
+		</accion>	
+	</controlador>
+    
+    
+    
+</controladores>
