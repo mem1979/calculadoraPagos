@@ -62,16 +62,20 @@ public class Caja {
     private void alCrear() throws Exception {
         validarDenominacionUnica();
         // Guarda el Total Calculado
-        setTotal(getCalculaTotal());
+        if (getCalculaTotal() == null || getCalculaTotal().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalStateException("El Total del Moviminiento de Caja no puede ser $0");
+        } else {
+        	setTotal(getCalculaTotal());}
         if (denominacion != null && denominacion.getNombre() != null) {
             setId(getDenominacion().getNombre());}
     }
     
     @PreUpdate
     private void alActualizar() throws Exception {
-     // Guarda el Total Calculado
-        setTotal(getCalculaTotal());
-    }
+    	if (getCalculaTotal() == null || getCalculaTotal().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalStateException("El Total del Moviminiento de Caja no puede ser $0.-");
+        } else {
+        }   	setTotal(getCalculaTotal());}
 
     // Métodos auxiliares
     private void validarDenominacionUnica() {

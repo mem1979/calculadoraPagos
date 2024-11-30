@@ -4,6 +4,7 @@ import java.math.*;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import org.openxava.annotations.*;
 import org.openxava.calculators.*;
@@ -14,15 +15,36 @@ import com.sta.cashtill.calculadores.*;
 import lombok.*;
 
 
-@Tab(properties = "movimiento, fechaHora, usuario, totalDetalle",
+@Tab(properties = "movimiento, fechaHora, usuario, totalDetalle, movimientoCajaNombre",
 	 editors = "List",
-	 defaultOrder = "${fechaHora} asc")
+	 defaultOrder = "${fechaHora} asc",
+	 rowStyles= { 
+				  @RowStyle(style="row-entrada", property="movimiento", value="ENTRADA"),
+				  @RowStyle(style="row-salida", property="movimiento", value="SALIDA"),
+				  @RowStyle(style="c1-salida", property="movimiento", value="SALIDA"),
+				  @RowStyle(style="row-ajuste", property="movimiento", value="AJUSTE"),
+				  
+				 })
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "DTYPE", discriminatorType = DiscriminatorType.STRING)
 @Getter @Setter
 abstract public class CajaRegistradora extends Identifiable {
+	
+	
+	@Transient
+	@ReadOnly
+	public String getMovimientoCajaNombre() {
+	    if (this instanceof CajaEntrada) {
+	        CajaEntrada cajaEntrada = (CajaEntrada) this;
+	        return cajaEntrada.getMovimientoCaja() != null ? cajaEntrada.getMovimientoCaja().getNombre() : null;
+	    } else if (this instanceof CajaSalida) {
+	        CajaSalida cajaSalida = (CajaSalida) this;
+	        return cajaSalida.getMovimientoCaja() != null ? cajaSalida.getMovimientoCaja().getNombre() : null;
+	    }
+	    return null;
+	}
 	
 	
     @DateTime
@@ -43,10 +65,15 @@ abstract public class CajaRegistradora extends Identifiable {
     private void Actualizar() {
 	   	setUsuario(getObtenerNombreUsuario());
 	   	setFechaHora(new Date());	   
-   	}
+	   	setTotal(getTotalDetalle());
+	}
    
+	
 	@ElementCollection
+	@ReadOnly(forViews ="salida")
 	@ListProperties(value = "caja.id, cantidad, total")
+	@NotNull(message = "El Detalle con los Valores del Movimiento de Caja no puede estar vacio.")
+	@Size(min = 1, message = "Debe haber al menos un detalle para realizar el Movimiento de Dinero de la Caja.")
 	Collection<DetalleCajaRegistradora> detalle;
 	
 	// Propiedad calculada para sumar el total de los detalles
@@ -63,6 +90,9 @@ abstract public class CajaRegistradora extends Identifiable {
 	            .reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 	
+	@Money
+	BigDecimal total;
+	
  // Métodos auxiliares
     private String getObtenerNombreUsuario() {
     return org.openxava.util.Users.getCurrent() != null ? org.openxava.util.Users.getCurrent() : "No Registrado";}
@@ -74,14 +104,5 @@ abstract public class CajaRegistradora extends Identifiable {
         return this.getClass().getAnnotation(DiscriminatorValue.class) != null
                 ? this.getClass().getAnnotation(DiscriminatorValue.class).value() : null;
     }
-    
-    // Propiedad calculada con consulta JPQL
-    @Money
-    @LargeDisplay(icon="cash-multiple")
-    @LabelFormat(LabelFormatType.NO_LABEL)
-    @Transient
-    @DefaultValueCalculator(TotalCajaCalculador.class)
-    BigDecimal totalGeneralCaja;
-       
    
 }

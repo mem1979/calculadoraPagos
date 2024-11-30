@@ -8,9 +8,13 @@ import com.sta.cashtill.auxiliares.*;
 
 import lombok.*;
 
-@View(members = "totalGeneralCaja,movimientoCaja, descripcionMovimientoCaja;" +
+@View(members = "movimientoCaja, descripcionMovimientoCaja;" +
         		"descripcion;" +
 				"detalle" )
+
+@Tab(properties = "movimiento, fechaHora, usuario, totalDetalle, movimientoCaja.nombre")
+
+
 @Entity
 @DiscriminatorValue("ENTRADA")
 @Getter @Setter
@@ -23,7 +27,7 @@ public class CajaEntrada extends CajaRegistradora {
 descriptionProperties = "nombre", 
 condition = "${tipoMovimiento} = 'ENTRADA'", 
 order = "${nombre} asc")
-private MovimientoCaja movimientoCaja;     
+private MovimientoCaja movimientoCaja; 
 
 @Label
 @Depends("movimientoCaja.id")

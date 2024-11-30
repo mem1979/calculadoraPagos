@@ -10,6 +10,7 @@ public class CajaSalidaAction extends ViewBaseAction {
         	showDialog(); 
             // Cambiar al modelo `CajaSalida`
         	 getView().setModelName("CajaSalida");
+        	 getView().setViewName("salida");
         	 getView().setTitle("SALIDA DE EFECTIVO - $");
         	 setControllers("MovimientoCaja");
                     

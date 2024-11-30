@@ -1,10 +1,4 @@
-/*
-Pon aquí tu propio estilo
-*/
 
-/*
-Pon aquí tu propio estilo
-*/
 
 .ox-active-section {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Agrega sombra */
@@ -77,74 +71,33 @@ Pon aquí tu propio estilo
     z-index: 25; /* Elevar el z-index de la imagen cuando esté en hover */
 }
 
-/* Estilos para fila "AMARILLO" */
-.row-yellow {
-    background-color: #FFEB99 !important; /* Amarillo pastel */
-    color: #333333 !important; /* Texto oscuro */
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1) !important; /* Sombra suave */
-    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
+/* Estilo para las filas de tipo ENTRADA */
+.row-entrada {
+    color:#c3e6cb; /* Texto verde oscuro */
 }
 
-/* Estilos para fila "ROJO" */
-.row-red {
-    background-color: #FFC1C1 !important; /* Rojo pastel */
-    color: #800000 !important; /* Texto rojo oscuro */
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1) !important; /* Sombra suave */
-    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
+/* Estilo para las filas de tipo SALIDA */
+.row-salida {
+	color: #f5c6cb; /* !important;  Texto rojo brillante */
+    font-size: 1.2em;          /* Incrementar tamaño del texto */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Sombra suave para más resalte */
+    }
+
+/* Estilo para las filas de tipo AJUSTE */
+   .row-ajuste {
+     color: #ffe8a1; /* Texto amarillo oscuro */
 }
 
-/* Estilos para COLUMNA 1 "VERDE Oscuro" */
-.c1-green td:nth-of-type(3) {
-	background-color: #C1E1C1 !important;  Verde pastel
-	color: #006400 !important; /* Texto verde oscuro */
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1) !important; /* Sombra suave */
-}
+/* Estilos para COLUMNA 1 "ENTRADA Claro" */
+  .c1-salida td:nth-of-type(3) {
+  	color: #ff0000; /* Texto rojo oscuro */
+    font-weight: bold;         /* Texto en negrita */
+   	font-size: 1.2em;          /* Incrementar tamaño del texto */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Sombra suave para más resalte */
+ }
+   
 
-/* Estilos para COLUMNA 1 "VERDE Claro" */
-.c1-greenClaro td:nth-of-type(3) {
-	background-color: #f0fff0 !important;  Verde pastel
-	color: #006400 !important; /* Texto verde oscuro */
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1) !important; /* Sombra suave */
-}
 
-/* Estilos para fila "VERDE" */
-.row-green {
-    background-color: #C1E1C1 !important;  Verde pastel 
-    color: #006400 !important; /* Texto verde oscuro */
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1) !important; /* Sombra suave */
-    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
-}
-
-/* Estilos para fila "TEXTO VERDE" */
-.row-green-texto {
-    color: #006400 !important; /* Texto verde oscuro */
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1) !important; /* Sombra suave */
-    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
-}
-
-/* Efecto hover para la fila amarilla */
-.row-yellow:hover {
-    background-color: #FFCC00 !important; /* Amarillo más intenso */
-    color: #000000 !important; /* Texto oscuro */
-    font-weight: bold !important; /* Texto en negrita */
-    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.2) !important; /* Sombra más pronunciada */
-}
-
-/* Efecto hover para la fila roja */
-.row-red:hover {
-    background-color: #FF6666 !important; /* Rojo más intenso */
-    color: #000000 !important; /* Texto oscuro */
-    font-weight: bold !important; /* Texto en negrita */
-    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.2) !important; /* Sombra más pronunciada */
-}
-
-/* Efecto hover para la fila verde */
-.row-green:hover {
-    background-color: #66CC66 !important; /* Verde más intenso */
-    color: #000000 !important; /* Texto oscuro */
-    font-weight: bold !important; /* Texto en negrita */
-    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.2) !important; /* Sombra más pronunciada */
-}
 
 
 /* Icono de cerrar con efectos de hover y pulsado */

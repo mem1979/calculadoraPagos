@@ -62,7 +62,7 @@ public class ActualizarCajaDesdeRegistradoraAction extends SaveAction {
             // Persistir los cambios en la caja
             try {
                 XPersistence.getManager().merge(caja);
-                addMessage("Cajas actualizadas correctamente.");
+                
             } catch (Exception e) {
                 addError("Error al actualizar la caja con ID " + cajaId + ": " + e.getMessage());
             }
@@ -70,6 +70,7 @@ public class ActualizarCajaDesdeRegistradoraAction extends SaveAction {
 
         // Cerrar Dialog(CajaEntrada, CajaSalida)
         closeDialog();
+        addMessage("Caja actualizada correctamente.");
     }
 
     // Determina el tipo de movimiento según la clase hija de CajaRegistradora.

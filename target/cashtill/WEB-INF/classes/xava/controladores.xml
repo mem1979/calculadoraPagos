@@ -23,10 +23,10 @@
     
     <controlador nombre="CajaRegistradora">
         <hereda-de controlador="Print"/>
-	        <accion nombre="INGRESO DE CAJA / COBROS" icono="cash-plus" modo="list"
+	        <accion nombre="INGRESO DE CAJA / COBROS"  modo="list" 
 	      	  clase="com.sta.cashtill.acciones.CajaEntradaAction">
 	       </accion>
-	       <accion nombre="SALIDA DE CAJA / PAGOS" icono="cash-minus" modo="list"
+	       <accion nombre="SALIDA DE CAJA / PAGOS"  modo="list"
 	      	  clase="com.sta.cashtill.acciones.CajaSalidaAction">
 	       </accion>  
     </controlador>
@@ -37,7 +37,7 @@
 	      	  	clase="com.sta.cashtill.acciones.CajaNuevoBilleteAction">
 	       </accion>
 	       <accion nombre="AgregarNuevoBillete" icono="cash-plus" modo="detail"
-	       		clase="org.openxava.actions.SaveAction">
+	       		clase="com.sta.cashtill.acciones.CajaSaveNewBilleteAction">
 	       </accion>
 	</controlador>
     
@@ -55,8 +55,9 @@
 	</controlador>
 	
 	 <controlador nombre="MovimientoCaja">
-		 <accion nombre="ActualizarCaja" 
+		 <accion nombre="ActualizarCaja" confirmar="true"
 			 clase="com.sta.cashtill.acciones.ActualizarCajaDesdeRegistradoraAction">
+			 <poner propiedad ="resetAfter" valor="false"/>
 		 </accion>
 		 <accion nombre="cancel" 
 			clase="org.openxava.actions.CancelDialogAction">

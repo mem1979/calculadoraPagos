@@ -12,10 +12,17 @@ import com.sta.cashtill.enums.*;
 
 import lombok.*;
 
-@View(members = "movimientoCaja, descripcionMovimientoCaja;" +
+@View(name="salida",
+	  members = "movimientoCaja, descripcionMovimientoCaja;" +
+			    "estrategiaPagos;" +
+				"importePagos, cantidadPagos, montoTotalPagos;" +
 			  	"descripcion;" +
-			  	"detalle;" +
-			  	"estrategiaPagos;" +
+			  	"detalle")
+
+@View(members = "movimientoCaja, descripcionMovimientoCaja;" +
+	  			"descripcion;" +
+	  			"detalle;" +
+	  			"estrategiaPagos;" +
 				"importePagos, cantidadPagos, montoTotalPagos")
 
 @Entity

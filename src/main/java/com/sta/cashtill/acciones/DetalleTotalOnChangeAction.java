@@ -11,7 +11,7 @@ public class DetalleTotalOnChangeAction extends OnChangePropertyBaseAction {
     @Override
     public void execute() throws Exception {
         DetalleCajaRegistradora detalle = (DetalleCajaRegistradora) getView().getEntity();
-        BigDecimal total = (BigDecimal) getNewValue();
+        BigDecimal total = (BigDecimal) getView().getValue("total");
 
         System.out.println("Inicio de la acción");
         System.out.println("Nuevo valor ingresado para 'total': " + total);
@@ -38,6 +38,7 @@ public class DetalleTotalOnChangeAction extends OnChangePropertyBaseAction {
                     System.out.println("Error: El total no es un múltiplo válido de la denominación.");
                     addError("El total ingresado no es un múltiplo válido de la denominación.");
                     getView().setValue("total", BigDecimal.ZERO);
+                    getView().setValue("cantidad", 0);
                 }
             } else {
                 System.out.println("Error: Total es nulo o denominación inválida.");
