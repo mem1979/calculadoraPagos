@@ -39,6 +39,7 @@
 	       <accion nombre="AgregarNuevoBillete" icono="cash-plus" modo="detail"
 	       		clase="com.sta.cashtill.acciones.CajaSaveNewBilleteAction">
 	       </accion>
+	       
 	</controlador>
     
     <controlador nombre="MovimientoCajaCreation">
@@ -61,6 +62,9 @@
 		 </accion>
 		 <accion nombre="cancel" 
 			clase="org.openxava.actions.CancelDialogAction">
+		</accion>
+		<accion nombre="CalcularSalida$" oculta="true" icono = "calculator"
+			clase = "com.sta.cashtill.acciones.CajaSalidaGenerarDetalleAction">
 		</accion>	
 	</controlador>
     

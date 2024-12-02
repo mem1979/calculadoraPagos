@@ -39,6 +39,7 @@
 	       <accion nombre="AgregarNuevoBillete" icono="cash-plus" modo="detail"
 	       		clase="com.sta.cashtill.acciones.CajaSaveNewBilleteAction">
 	       </accion>
+	       
 	</controlador>
     
     <controlador nombre="MovimientoCajaCreation">

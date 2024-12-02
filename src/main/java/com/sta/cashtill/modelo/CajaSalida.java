@@ -7,6 +7,7 @@ import javax.persistence.*;
 import org.openxava.annotations.*;
 import org.openxava.calculators.*;
 
+import com.sta.cashtill.acciones.*;
 import com.sta.cashtill.auxiliares.*;
 import com.sta.cashtill.enums.*;
 
@@ -39,6 +40,7 @@ public class CajaSalida extends CajaRegistradora {
 	    condition = "${tipoMovimiento} = 'SALIDA'", // Usa comillas simples para el valor de filtro
 	    order = "${nombre} asc"           // Ordena la lista por 'nombre'
 	)
+	@OnChange(CajaRegistradoraActualizarDetalleCategoriaMovimientoAction.class)
 	private MovimientoCaja movimientoCaja;
 	
 	@Label
@@ -48,6 +50,7 @@ public class CajaSalida extends CajaRegistradora {
 	return movimientoCaja != null && movimientoCaja.getDescripcion() != null ? movimientoCaja.getDescripcion() : "";}
 	
 	@Required
+	@Action(value="MovimientoCaja.CalcularSalida$", alwaysEnabled=true)
     @Enumerated(EnumType.STRING)
     @LabelFormat(LabelFormatType.SMALL)
     private EstrategiaPagos estrategiaPagos;

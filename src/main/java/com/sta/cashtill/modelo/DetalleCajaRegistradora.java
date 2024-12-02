@@ -16,7 +16,7 @@ import lombok.*;
 @Getter @Setter
 public class DetalleCajaRegistradora {
 	
-	@Required
+	
 	@OnChange(DetalleTotalOnChangeAction.class)
 	@ManyToOne(fetch = FetchType.LAZY, optional = false) // 1
 	@DescriptionsList(descriptionProperties="id",
@@ -24,13 +24,16 @@ public class DetalleCajaRegistradora {
 	  				//  condition= "${cantidad} != 0")
 	private Caja caja;
 	
+	String cajaId;
+	
 	@Required
 	@OnChange(DetalleCantidadOnChangeAction.class)
 	@DefaultValueCalculator(ZeroIntegerCalculator.class)
 	private int cantidad;
 
-	@Money
+	
 	@Required
+	@Money
 	@OnChange(DetalleTotalOnChangeAction.class)
 	@DefaultValueCalculator(ZeroBigDecimalCalculator.class)
 	private BigDecimal total;

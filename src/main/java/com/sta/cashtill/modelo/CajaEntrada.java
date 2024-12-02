@@ -4,12 +4,14 @@ import javax.persistence.*;
 
 import org.openxava.annotations.*;
 
+import com.sta.cashtill.acciones.*;
 import com.sta.cashtill.auxiliares.*;
 
 import lombok.*;
 
 @View(members = "movimientoCaja, descripcionMovimientoCaja;" +
         		"descripcion;" +
+        		"documento;" +
 				"detalle" )
 
 @Tab(properties = "movimiento, fechaHora, usuario, totalDetalle, movimientoCaja.nombre")
@@ -27,14 +29,18 @@ public class CajaEntrada extends CajaRegistradora {
 descriptionProperties = "nombre", 
 condition = "${tipoMovimiento} = 'ENTRADA'", 
 order = "${nombre} asc")
+@OnChange(CajaRegistradoraActualizarDetalleCategoriaMovimientoAction.class)
 private MovimientoCaja movimientoCaja; 
+
+@LabelFormat(LabelFormatType.NO_LABEL)
+@File(maxFileSizeInKb=90)
+@Column(length=32)
+private String documento;
 
 @Label
 @Depends("movimientoCaja.id")
 @LabelFormat(LabelFormatType.NO_LABEL)
 public String getDescripcionMovimientoCaja() {
 return movimientoCaja != null && movimientoCaja.getDescripcion() != null ? movimientoCaja.getDescripcion() : "";}
-
-
 
 }

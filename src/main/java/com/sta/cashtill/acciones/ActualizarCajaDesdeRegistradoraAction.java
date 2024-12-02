@@ -8,19 +8,11 @@ import org.openxava.jpa.*;
 import com.sta.cashtill.enums.*;
 import com.sta.cashtill.modelo.*;
 
+
 public class ActualizarCajaDesdeRegistradoraAction extends SaveAction {
 
     @Override
     public void execute() throws Exception {
-        // Llamar al método de guardado de SaveAction
-        super.execute();
-
-        // Si hay errores en SaveAction, detener la ejecución
-        if (getErrors().contains()) {
-            System.out.println("Errores detectados en SaveAction. Se cancela la actualización de las cajas.");
-            return;
-        }
-
         // Obtener la entidad CajaRegistradora desde la vista
         CajaRegistradora cajaRegistradora = (CajaRegistradora) getView().getEntity();
 
@@ -36,18 +28,29 @@ public class ActualizarCajaDesdeRegistradoraAction extends SaveAction {
             return;
         }
 
+        // Validar todas las cajas antes de realizar actualizaciones
+        if (!validarCajas(cajaRegistradora, tipoMovimiento)) {
+            addError("Uno o más tipo de Billetes, no tienen suficiente cantidad para realizar " + cajaRegistradora.getMovimientoCajaNombre());
+            return; // Salir sin ejecutar el super.execute()
+        }
+
+        
+        // Llamar al método de guardado de SaveAction
+        super.execute();
+
         // Iterar sobre los detalles y actualizar las cajas asociadas
         for (DetalleCajaRegistradora detalle : cajaRegistradora.getDetalle()) {
             if (detalle == null) {
                 addError("El detalle es nulo y no puede procesarse.");
                 continue;
             }
-
-            String cajaId = detalle.getCaja().getId(); // Obtener el ID de la caja desde el detalle
+            //   String cajaId = detalle.getCaja().getId(); // Obtener el ID de la caja desde el detalle
+            String cajaId = detalle.getCajaId();
             if (cajaId == null || cajaId.isEmpty()) {
                 addError("El ID de la caja en el detalle es nulo o vacío: " + detalle);
                 continue;
             }
+      
 
             // Buscar la caja asociada por su ID
             Caja caja = buscarCajaPorId(cajaId);
@@ -62,7 +65,6 @@ public class ActualizarCajaDesdeRegistradoraAction extends SaveAction {
             // Persistir los cambios en la caja
             try {
                 XPersistence.getManager().merge(caja);
-                
             } catch (Exception e) {
                 addError("Error al actualizar la caja con ID " + cajaId + ": " + e.getMessage());
             }
@@ -71,6 +73,49 @@ public class ActualizarCajaDesdeRegistradoraAction extends SaveAction {
         // Cerrar Dialog(CajaEntrada, CajaSalida)
         closeDialog();
         addMessage("Caja actualizada correctamente.");
+    }
+
+    // Valida si todas las cajas tienen suficiente cantidad antes de realizar actualizaciones
+    private boolean validarCajas(CajaRegistradora cajaRegistradora, TipoMovimiento tipoMovimiento) {
+        if (tipoMovimiento == TipoMovimiento.ENTRADA) {
+            return true; // No es necesario validar para entradas
+        }
+
+        for (DetalleCajaRegistradora detalle : cajaRegistradora.getDetalle()) {
+            if (detalle == null) {
+                continue;
+            }
+
+            String cajaId = (detalle.getCaja() != null && detalle.getCaja().getId() != null && !detalle.getCaja().getId().isEmpty()) 
+                    ? detalle.getCaja().getId() 
+                    : detalle.getCajaId();
+
+    if (cajaId == null || cajaId.isEmpty()) {
+        continue;
+    }
+
+            // Buscar la caja asociada por su ID
+            Caja caja = buscarCajaPorId(cajaId);
+            if (caja == null) {
+                continue;
+            }
+
+            // Validar cantidad
+            if (caja.getCantidad() < detalle.getCantidad()) {
+                addError("Los billetes de la denominación " + obtenerDenominacionCaja(caja) +
+                         " no son suficientes. Cantidad disponible: " + caja.getCantidad() +
+                         ", cantidad requerida: " + detalle.getCantidad());
+                return false; // Detener la validación si una caja no cumple
+            }
+        }
+
+        return true; // Todas las cajas tienen suficiente cantidad
+    }
+
+    // Obtiene la denominación de la caja
+    private String obtenerDenominacionCaja(Caja caja) {
+        // Reemplaza este método si la denominación está en otra entidad o calculada
+        return caja.getDenominacion().getNombre() != null ? caja.getDenominacion().getNombre() : "desconocida";
     }
 
     // Determina el tipo de movimiento según la clase hija de CajaRegistradora.

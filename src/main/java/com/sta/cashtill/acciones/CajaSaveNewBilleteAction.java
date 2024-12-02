@@ -7,7 +7,7 @@ public class CajaSaveNewBilleteAction extends SaveAction{
 	@Override
     public void execute() throws Exception {
 		super.execute();
-		setNextMode(LIST);
+		closeDialog();
 		
 	}
 

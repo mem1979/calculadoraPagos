@@ -4,7 +4,7 @@ public enum EstrategiaPagos {
 	MAYOR_CANTIDAD("Denominaciones con Mayor Cantidad de Billetes"),
 	MAYOR_VALOR("Denominaciones de Mayor Valor"),
 	MENOR_VALOR("Denominaciones de Menor Valor"),
-	EQUITATIVO("Distribucion de forma Equitativa de Billetes");
+	EQUITATIVO("Distribucion Equitativa de Billetes");
 	
 
     private String estrategiaPagos;
