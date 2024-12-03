@@ -47,15 +47,14 @@ public class CajaSalidaGenerarDetalleAction extends ViewBaseAction {
                 if (cantidadUsada > 0) {
                     // Crear el detalle y agregarlo a la colección
                     DetalleCajaRegistradora detalle = new DetalleCajaRegistradora();
-                    detalle.setCajaId(caja.getId());
+                    detalle.setCaja(caja);
                     detalle.setCantidad(cantidadUsada);
                     detalle.setTotal(valorDenominacion.multiply(BigDecimal.valueOf(cantidadUsada)));
                     nuevosDetalles.add(detalle);
 
                     montoRestante = montoRestante.subtract(valorDenominacion.multiply(BigDecimal.valueOf(cantidadUsada)));
                     System.out.println(">>> Detalle generado: Caja=" + caja.getDenominacion().getValor() +
-                                       ", Cantidad=" + cantidadUsada + ", Total=" + detalle.getTotal());
-                }
+                                       ", Cantidad=" + cantidadUsada + ", Total=" + detalle.getTotal()); }
             }
 
             // Verificar si se cubrió el monto total
@@ -68,7 +67,7 @@ public class CajaSalidaGenerarDetalleAction extends ViewBaseAction {
             List<Map<String, Object>> detallesMap = new ArrayList<>();
             for (DetalleCajaRegistradora detalle : nuevosDetalles) {
                 Map<String, Object> detalleMap = new HashMap<>();
-                detalleMap.put("cajaId", detalle.getCajaId());
+                detalleMap.put("cajaId", detalle.getCaja().getId() );
                 detalleMap.put("cantidad", detalle.getCantidad());
                 detalleMap.put("total", detalle.getTotal());
                 detallesMap.add(detalleMap);

@@ -11,8 +11,7 @@ import lombok.*;
 
 @View(members = "movimientoCaja, descripcionMovimientoCaja;" +
         		"descripcion;" +
-        		"documento;" +
-				"detalle" )
+        		"detalle,documento")
 
 @Tab(properties = "movimiento, fechaHora, usuario, totalDetalle, movimientoCaja.nombre")
 
@@ -32,7 +31,7 @@ order = "${nombre} asc")
 @OnChange(CajaRegistradoraActualizarDetalleCategoriaMovimientoAction.class)
 private MovimientoCaja movimientoCaja; 
 
-@LabelFormat(LabelFormatType.NO_LABEL)
+@LabelFormat(LabelFormatType.SMALL)
 @File(maxFileSizeInKb=90)
 @Column(length=32)
 private String documento;

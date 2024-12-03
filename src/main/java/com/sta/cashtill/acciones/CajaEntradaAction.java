@@ -11,7 +11,7 @@ public class CajaEntradaAction extends ViewBaseAction {
             // Cambiar al modelo `CajaEntrada`
         	 getView().setModelName("CajaEntrada");
         	 getView().setTitle("INGRESO DE EFECTIVO + $");
-        	 setControllers("MovimientoCaja");
+        	 addActions("MovimientoCaja.ActualizarCajaEntrada", "Dialog.cancel");
             
             } catch (Exception ex) {
             ex.printStackTrace();

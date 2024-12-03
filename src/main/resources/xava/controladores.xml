@@ -56,8 +56,12 @@
 	</controlador>
 	
 	 <controlador nombre="MovimientoCaja">
-		 <accion nombre="ActualizarCaja" confirmar="true"
-			 clase="com.sta.cashtill.acciones.ActualizarCajaDesdeRegistradoraAction">
+		 <accion nombre="ActualizarCajaEntrada" confirmar="true"
+			 clase="com.sta.cashtill.acciones.ActualizarCajaDesdeCajaEntradaAction">
+			 <poner propiedad ="resetAfter" valor="false"/>
+		 </accion>
+		 <accion nombre="ActualizarCajaSalida" confirmar="true"
+			 clase="com.sta.cashtill.acciones.ActualizarCajaDesdeCajaSalidaAction">
 			 <poner propiedad ="resetAfter" valor="false"/>
 		 </accion>
 		 <accion nombre="cancel" 
