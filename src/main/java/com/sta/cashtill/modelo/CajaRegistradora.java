@@ -10,17 +10,18 @@ import org.openxava.calculators.*;
 import org.openxava.model.*;
 
 import com.sta.cashtill.calculadores.*;
+import com.sta.cashtill.enums.*;
 
 import lombok.*;
 
 
 @Tab(properties = "tipoMovimiento,categoria, fechaHora, usuario, total+",
-	 editors = "List",
+	 editors = "List, Calendar",
 	 defaultOrder = "${fechaHora} desc",
 	 rowStyles= { @RowStyle(style="row-entrada", property="tipoMovimiento", value="ENTRADA"),
-				  @RowStyle(style="row-salida", property="tipoMovimiento", value="SALIDA"),
-				  @RowStyle(style="c1-salida", property="tipoMovimiento", value="SALIDA"),
-				  @RowStyle(style="row-ajuste", property="tipoMovimiento", value="AJUSTE") 
+				  @RowStyle(style="row-salida",  property="tipoMovimiento", value="SALIDA"),
+				  @RowStyle(style="c1-salida",   property="tipoMovimiento", value="SALIDA"),
+				  @RowStyle(style="row-ajuste",  property="tipoMovimiento", value="AJUSTE") 
 				 })
 
 @Entity
@@ -79,8 +80,8 @@ abstract public class CajaRegistradora extends Identifiable {
 	@LargeDisplay(icon = "cash-multiple")
 	BigDecimal total;
 	
-	@Column(length = 10)
-	String tipoMovimiento;
+	@Enumerated(EnumType.STRING)
+	private TipoMovimiento tipoMovimiento;
 	
 	@LabelFormat(LabelFormatType.NO_LABEL)
 	@LargeDisplay(icon = "cash-register")
@@ -92,8 +93,21 @@ abstract public class CajaRegistradora extends Identifiable {
 	   	setUsuario(getObtenerNombreUsuario());
 	   	setFechaHora(new Date());	   
 	   	setTotal(getTotalDetalle());
-	   	setTipoMovimiento(getMovimiento());
 	   	setCategoria(getMovimientoCajaNombre());
+	    String movimientoCalculado = getMovimiento(); // Ejemplo: "entrada", "salida", etc.
+	    switch (movimientoCalculado.toLowerCase()) {
+	        case "ENTRADA":
+	            setTipoMovimiento(TipoMovimiento.ENTRADA);
+	            break;
+	        case "SALIDA":
+	            setTipoMovimiento(TipoMovimiento.SALIDA);
+	            break;
+	        case "AJUSTE":
+	            setTipoMovimiento(TipoMovimiento.AJUSTE);
+	            break;
+	        default:
+	            throw new IllegalStateException("Movimiento desconocido: " + movimientoCalculado);
+	    }
 	}
 	
 	

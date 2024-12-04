@@ -16,6 +16,7 @@ import lombok.*;
 @View(name="entrada",
  	  members = "movimientoCaja;" +
  			  	"descripcion;" +
+ 			  	"Caja.NuevoBillete(ALWAYS);" +
   		   		"detalle,documento")
 
 @Tab(properties = "movimiento, fechaHora, usuario, totalDetalle, movimientoCaja.nombre")
