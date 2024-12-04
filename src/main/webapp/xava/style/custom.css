@@ -1,0 +1,187 @@
+
+
+.ox-active-section {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Agrega sombra */
+    padding: 5px; /* Añade algo de padding */
+}
+
+
+/* separacion de los campos margen Izquierdo */
+.ox-detail {
+    margin: 8px 10px 0px 20px;
+    padding-top: 2px;
+}
+.ox-sections {
+    margin-left: 5px; /* Ajusta el valor según el espacio deseado */
+} 
+
+@keyframes scale-up-horizontal-left {
+  0% {
+    transform: scaleX(0.4);
+    transform-origin: left center;
+  }
+  100% {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+}
+
+/* Aplicación de la animación a #modules_list .selected */
+#modules_list .selected {
+  /* Aquí aplicamos la clase con la animación */
+  animation: scale-up-horizontal-left 0.5s;
+}
+
+
+.file-view {
+    display: inline-block;
+    width: 110px;
+    height: 100px;
+    overflow: hidden;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3), 0 0 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    background-color: #f8f8f8;
+    position: relative;
+    transform-origin: top left; /* El crecimiento empezará desde la esquina superior izquierda */
+    z-index: 10;
+    
+}
+
+.file-view img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Para que la imagen se ajuste sin recortarse */
+    transition: transform 0.3s ease-in-out; /* Transición suave para el crecimiento */
+    position: relative;
+    z-index: 15; /* Imagen con un z-index más alto dentro del contenedor */
+}
+
+.file-view:hover {
+    transform: scale(1.9); /* Sobresalir un 80% */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6); /* Sombra al sobresalir */
+    z-index: 20; /* Elevar el z-index cuando esté en hover */
+    position: relative; /* Asegura que se mantenga en el contexto adecuado */
+    transform-origin: top left;
+}
+
+.file-view:hover img {
+    transform: scale(1.2); /* Pequeño zoom en la imagen */
+    z-index: 25; /* Elevar el z-index de la imagen cuando esté en hover */
+}
+
+/* Estilo para las filas de tipo ENTRADA */
+.row-entrada {
+    color:#c3e6cb; /* Texto verde oscuro */
+}
+
+/* Estilo para las filas de tipo SALIDA */
+.row-salida {
+	color: #f5c6cb; /* !important;  Texto rojo brillante */
+    font-size: 1.2em;          /* Incrementar tamaño del texto */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Sombra suave para más resalte */
+    }
+
+/* Estilo para las filas de tipo AJUSTE */
+   .row-ajuste {
+     color: #ffe8a1; /* Texto amarillo oscuro */
+}
+
+/* Estilos para COLUMNA 1 "ENTRADA Claro" */
+  .c1-salida td:nth-of-type(3) {
+  	color: #ff0000; /* Texto rojo oscuro */
+    font-weight: bold;         /* Texto en negrita */
+   	font-size: 1.2em;          /* Incrementar tamaño del texto */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Sombra suave para más resalte */
+ }
+   
+
+
+
+
+/* Icono de cerrar con efectos de hover y pulsado */
+.ox-message-box .mdi-close {
+    text-shadow: 3px 2px 3px black;
+    color: #efdede;
+    float: right;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease; /* Transición suave */
+}
+
+.ox-message-box .mdi-close:hover {
+    color: #ff6f6f; /* Cambia el color al pasar el cursor */
+    transform: scale(2.0); /* Agranda ligeramente el icono */
+}
+
+.ox-message-box .mdi-close:active {
+    transform: scale(0.9); /* Reduce el tamaño al hacer clic */
+    color: #ffffff; /* Cambia el color al hacer clic */
+}
+
+.ox-message-box {
+    font-size: medium;
+    font-weight: normal;
+    color: var(--message-box-color);
+    padding: 10px;
+    border: 0px;
+    margin-bottom: 12px;
+    border-radius: 15px;
+    box-shadow: 1px 2px 8px var(--message-box-shadow);
+ }
+ 
+ 
+ /* Selecciona todos los elementos que correspondan a la propiedad 'proximoCumpleaños' */
+[id$="proximoCumpleanos"] {
+    color: var(--section-color);
+    font-weight: bold;
+ }
+ 
+.ox-active .ox-section-tab {
+    color: var(--active-section-tab-color);
+    border-bottom-color: var(--active-section-tab-bottom-color);
+    font-size: 1.2em; /* Aumenta un poco el tamaño de la tipografía */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Leve sombreado en la tipografía */
+    border: 2px solid var(--active-section-tab-border-color); /* Aplica un borde */
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3); /* Sombra alrededor del borde */
+}
+/* Animación proporcionada 
+.blur-in-expand {
+  animation: blur-in-expand 0.3s linear both;
+}
+
+@keyframes blur-in-expand {
+  0% {
+    transform: scale(0);
+    filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+/* Estilos de .ox-section */
+.ox-section {
+  position: relative;
+  margin: 8px -10px 10px -10px;
+  padding: 3px 10px 0px 0px;
+  /* Degradado que mezcla el color claro con la transparencia */
+  background: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), var(--section-background);
+  
+  /* Aplicación de la animación solo al box-shadow */
+  animation: box-shadow-in 0.5s linear both;
+}
+
+/* Animación para el box-shadow */
+@keyframes box-shadow-in {
+  0% {
+    box-shadow: 0 0px 0px -2px rgba(0, 0, 0, 0); /* Sin sombra al inicio */
+  }
+  100% {
+    box-shadow: 0 4px 4px -2px rgba(0, 0, 0, 0.2); /* Línea sombreada al final */
+  }
+}
