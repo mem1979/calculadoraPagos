@@ -1,0 +1,7 @@
+com\sta\cashtill\calculadores\DenominacionPorDefectoCalculator.class
+com\sta\cashtill\modelo\CajaRegistradora.class
+com\sta\cashtill\enums\EstrategiaPagos.class
+com\sta\cashtill\calculadores\UsuarioPorDefectoCalculator.class
+com\sta\cashtill\auxiliares\Denominaciones.class
+com\sta\cashtill\modelo\Caja.class
+com\sta\cashtill\run\cashtill.class
