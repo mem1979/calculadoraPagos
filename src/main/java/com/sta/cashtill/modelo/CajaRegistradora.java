@@ -43,11 +43,11 @@ abstract public class CajaRegistradora extends Identifiable {
 	String usuario;
 	
 	@TextArea
+	@Column(length = 1000)
 	String descripcion;
 	
 	@ElementCollection
-	@ListProperties(value = "caja.id, cantidad, total+") 
-	@ListProperties(forViews = "salida",value = "cajaSearch.id, cantidad, total+")
+	@ListProperties(value = "caja.id, cantidad, total+")
 	private List<DetalleCajaRegistradora> detalle = new ArrayList<>();
 	
 	// Propiedad calculada para sumar el total de los detalles

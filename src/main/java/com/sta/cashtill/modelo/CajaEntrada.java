@@ -10,13 +10,13 @@ import com.sta.cashtill.auxiliares.*;
 import lombok.*;
 
 @View(members = "categoria, total;" +
-				"descripcion, detalle;" +
+				"descripcion;" +
 				"documento")
 
 @View(name="entrada",
  	  members = "movimientoCaja;" +
  			  	"descripcion;" +
- 			  	"Caja.NuevoBillete(ALWAYS);" +
+ 			  	"Caja.NuevoBillete();" +
   		   		"detalle, documento")
 
 @Tab(properties = "movimiento, fechaHora, usuario, totalDetalle, movimientoCaja.nombre")

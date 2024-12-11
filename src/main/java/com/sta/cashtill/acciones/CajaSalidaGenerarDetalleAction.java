@@ -1,6 +1,6 @@
- package com.sta.cashtill.acciones;
+package com.sta.cashtill.acciones;
 
- import java.math.*;
+import java.math.*;
 import java.util.*;
 
 import javax.persistence.*;
@@ -11,180 +11,194 @@ import org.openxava.util.*;
 import com.sta.cashtill.enums.*;
 import com.sta.cashtill.modelo.*;
 
- public class CajaSalidaGenerarDetalleAction extends ViewBaseAction {
+public class CajaSalidaGenerarDetalleAction extends ViewBaseAction {
 
-     @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
 	@Override
-     public void execute() throws Exception {
-         try {
-             // Obtener la entidad CajaSalida desde la vista
-             CajaSalida cajaSalida = (CajaSalida) getView().getEntity();
+    public void execute() throws Exception {
+        try {
+            // Obtener la entidad CajaSalida desde la vista
+            CajaSalida cajaSalida = (CajaSalida) getView().getEntity();
 
-             // Verificar la estrategia de pago seleccionada
-             EstrategiaPagos estrategiaPagos = cajaSalida.getEstrategiaPagos();
-             if (estrategiaPagos == null) {
-                 addError("Debe seleccionar una estrategia de pago antes de generar el detalle.");
-                 return;
-             }
+            // Calcular el total disponible en la caja
+            BigDecimal totalDisponible = calcularTotalDisponible();
 
-             BigDecimal montoRestante = cajaSalida.getImporte();
-             List<DetalleCajaRegistradora> nuevosDetalles = new ArrayList<>();
+            // Verificar si el total disponible es suficiente para cubrir el importe
+            if (cajaSalida.getImporte().compareTo(totalDisponible) > 0) {
+                addError("El total disponible en la caja no es suficiente para cubrir el importe del pago. Disponible: " + totalDisponible + ", Requerido: " + cajaSalida.getImporte());
+                return;
+            }
 
-             // Procesar según la estrategia seleccionada
-             switch (estrategiaPagos) {
-                 case MANUAL:
-                     aplicarEstrategiaManual(cajaSalida, nuevosDetalles);
-                     break;
-                 case MEJOR_AJUSTE:
-                     List<Caja> cajas = obtenerCajasOrdenadas(montoRestante);
-                     aplicarEstrategiaOptimizada(montoRestante, cajas, nuevosDetalles);
-                     break;
-                 default:
-                     addError("Estrategia de pago no soportada.");
-                     return;
-             }
+            // Verificar que la estrategia sea MEJOR_AJUSTE
+            if (cajaSalida.getEstrategiaPagos() != EstrategiaPagos.MEJOR_AJUSTE) {
+                addError("Seleccione la estrategia de pagos Calculada, para generar el detalle optimizando los billetes y las denominaciones disponibles");
+                return;
+            }
 
-             // Unificar los detalles antes de asignarlos a la vista
-             nuevosDetalles = unificarDetalles(nuevosDetalles);
+            BigDecimal montoRestante = cajaSalida.getImporte();
+            List<DetalleCajaRegistradora> nuevosDetalles = new ArrayList<>();
 
-             // **Ordenar los detalles de mayor a menor valor**
-             nuevosDetalles.sort(Comparator.comparing(
-                 (DetalleCajaRegistradora detalle) -> detalle.getCaja().getDenominacion().getValor())
-                 .reversed()
-             );
+            // Obtener las cajas disponibles ordenadas dinámicamente
+            List<Caja> cajas = obtenerCajasOrdenadas();
 
-             // Verificar si se cubrió completamente el importe
-             BigDecimal totalCubierto = nuevosDetalles.stream()
-                     .map(DetalleCajaRegistradora::getTotal)
-                     .reduce(BigDecimal.ZERO, BigDecimal::add);
+            // Crear una copia de las cantidades disponibles para simulación sin afectar la base de datos
+            Map<Caja, Integer> copiaCantidadesDisponibles = new HashMap<>();
+            for (Caja caja : cajas) {
+                copiaCantidadesDisponibles.put(caja, caja.getCantidad());
+            }
 
-             montoRestante = montoRestante.subtract(totalCubierto);
+            // Primera pasada: Aplicar estrategia optimizada priorizando cubrir el importe
+            aplicarEstrategiaOptimizada(montoRestante, cajas, nuevosDetalles, copiaCantidadesDisponibles);
 
-             if (montoRestante.compareTo(BigDecimal.ZERO) > 0) {
-                 addWarning("No se pudo cubrir el monto total requerido. Monto restante: " + montoRestante);
-             }
+            // Validar si queda algún monto restante
+            montoRestante = montoRestante.subtract(
+                nuevosDetalles.stream()
+                    .map(DetalleCajaRegistradora::getTotal)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add)
+            );
 
-             // Generar la descripción
-             StringBuilder descriptionBuilder = new StringBuilder();
-             for (DetalleCajaRegistradora detalle : nuevosDetalles) {
-                 descriptionBuilder.append("Cantidad ")
-                         .append(detalle.getCantidad())
-                         .append(" de billetes de valor ")
-                         .append(detalle.getCaja().getDenominacion().getValor())
-                         .append("\n");
-             }
+            // Segunda pasada: Intentar cubrir el monto restante con billetes menores
+            if (montoRestante.compareTo(BigDecimal.ZERO) > 0) {
+                aplicarSegundaPasada(montoRestante, cajas, nuevosDetalles, copiaCantidadesDisponibles);
+            }
 
-             if (montoRestante.compareTo(BigDecimal.ZERO) > 0) {
-                 descriptionBuilder.append("No se pudo cubrir el monto total requerido. Monto restante: ")
-                         .append(montoRestante)
-                         .append("\n");
-             }
+            // Validar y unificar los detalles antes de asignarlos a la vista
+            if (!nuevosDetalles.isEmpty()) {
+                nuevosDetalles = unificarDetalles(nuevosDetalles);
 
-             // Asignar la descripción generada
-             cajaSalida.setDescripcion(descriptionBuilder.toString());
-             getView().setValue("descripcion", descriptionBuilder.toString());
+                // Ordenar los detalles de mayor a menor valor
+                nuevosDetalles.sort(Comparator.comparing(
+                    (DetalleCajaRegistradora detalle) -> detalle.getCaja().getDenominacion().getValor())
+                    .reversed()
+                );
+            }
 
-             // Convertir los detalles a mapas para asignarlos a la vista
-             List<Map<String, Object>> detallesMap = new ArrayList<>();
-             for (DetalleCajaRegistradora detalle : nuevosDetalles) {
-                 Map<String, Object> detalleMap = new HashMap<>();
-                 detalleMap.put("cajaSearch.id", detalle.getCaja().getId());
-                 detalleMap.put("cantidad", detalle.getCantidad());
-                 detalleMap.put("total", detalle.getTotal());
-                 detalleMap = Maps.plainToTree(detalleMap);
-                 detallesMap.add(detalleMap);
-             }
+            // Convertir los detalles a mapas para asignarlos a la vista
+            List<Map<String, Object>> detallesMap = new ArrayList<>();
+            for (DetalleCajaRegistradora detalle : nuevosDetalles) {
+                if (detalle == null || detalle.getCaja() == null || detalle.getCantidad() == 0 || detalle.getTotal() == null) {
+                    addError("Uno de los detalles está incompleto o contiene datos nulos. Verifique los valores ingresados.");
+                    return;
+                }
 
-             // Asignar la colección convertida a la vista
-             getView().setValue("detalle", detallesMap);
+                Map<String, Object> detalleMap = new HashMap<>();
+                detalleMap.put("caja.id", detalle.getCaja().getId());
+                detalleMap.put("cantidad", detalle.getCantidad());
+                detalleMap.put("total", detalle.getTotal());
+                detalleMap = Maps.plainToTree(detalleMap);
+                detallesMap.add(detalleMap);
+            }
 
-             // Refrescar la colección
-             getView().refreshCollections();
+            // Asignar la colección convertida a la vista
+            getView().setValue("detalle", detallesMap);
 
-             // Mensaje de éxito
-             addMessage("La colección de detalles ha sido completada correctamente.");
-         } catch (Exception e) {
-             addError("Se produjo un error al completar la colección de detalles: " + e.getMessage());
-         }
-     }
+            // Refrescar la colección
+            getView().refreshCollections();
 
-     /**
-      * Aplicar la estrategia MANUAL.
-      */
-     private void aplicarEstrategiaManual(CajaSalida cajaSalida, List<DetalleCajaRegistradora> detalles) {
-         List<DetalleCajaRegistradora> seleccionados = cajaSalida.getDetalle();
-         if (seleccionados == null || seleccionados.isEmpty()) {
-             addError("No se seleccionaron denominaciones para la estrategia manual.");
-             return;
-         }
+            // Mensaje de éxito
+            addMessage("Cálculo realizado correctamente.");
+        } catch (Exception e) {
+            addError("Se produjo un error al completar la colección de detalles: " + e.getMessage());
+        }
+    }
 
-         detalles.addAll(seleccionados);
-     }
+    /**
+     * Aplicar la estrategia MEJOR_AJUSTE optimizada (primera pasada).
+     * Prioriza billetes de mayor denominación y mayor cantidad disponible,
+     * asegurándose de no asignar más de lo disponible.
+     */
+    private void aplicarEstrategiaOptimizada(BigDecimal montoRestante, List<Caja> cajasDisponibles, List<DetalleCajaRegistradora> detalles, Map<Caja, Integer> copiaCantidadesDisponibles) {
+        cajasDisponibles.sort(Comparator.comparing((Caja c) -> c.getDenominacion().getValor()).reversed()
+                .thenComparing(Caja::getCantidad, Comparator.reverseOrder()));
 
-     /**
-      * Aplicar la estrategia MEJOR_AJUSTE utilizando el método optimizado.
-      */
-     private void aplicarEstrategiaOptimizada(BigDecimal montoRestante, List<Caja> cajasDisponibles, List<DetalleCajaRegistradora> detalles) {
-         final double porcentajeMinimoCambio = 0.2; // Conservar al menos el 20% de cada denominación
+        for (Caja caja : cajasDisponibles) {
+            if (montoRestante.compareTo(BigDecimal.ZERO) <= 0) break;
 
-         // Ordenar las cajas por valor de denominación (mayor a menor) y luego por cantidad disponible (mayor a menor)
-         cajasDisponibles.sort(Comparator.comparing((Caja c) -> c.getDenominacion().getValor()).reversed()
-                 .thenComparing(Caja::getCantidad, Comparator.reverseOrder()));
+            BigDecimal valorDenominacion = caja.getDenominacion().getValor();
+            int cantidadDisponible = copiaCantidadesDisponibles.get(caja);
 
-         for (Caja caja : cajasDisponibles) {
-             if (montoRestante.compareTo(BigDecimal.ZERO) <= 0) break;
+            if (cantidadDisponible <= 0) continue;
 
-             BigDecimal valorDenominacion = caja.getDenominacion().getValor();
-             int cantidadDisponible = caja.getCantidad();
+            int cantidadRequerida = montoRestante.divide(valorDenominacion, 0, RoundingMode.DOWN).intValue();
+            int cantidadUsada = Math.min(cantidadRequerida, cantidadDisponible);
 
-             if (cantidadDisponible <= 0) continue;
+            if (cantidadUsada > 0) {
+                DetalleCajaRegistradora detalle = new DetalleCajaRegistradora();
+                detalle.setCaja(caja);
+                detalle.setCantidad(cantidadUsada);
+                detalle.setTotal(valorDenominacion.multiply(BigDecimal.valueOf(cantidadUsada)));
+                detalles.add(detalle);
 
-             // Calcular cuántos billetes se pueden usar manteniendo el nivel mínimo de cambio
-             int cantidadMinimaCambio = (int) Math.ceil(cantidadDisponible * porcentajeMinimoCambio);
-             int cantidadPermitida = Math.max(0, cantidadDisponible - cantidadMinimaCambio);
+                montoRestante = montoRestante.subtract(detalle.getTotal());
+                copiaCantidadesDisponibles.put(caja, cantidadDisponible - cantidadUsada);
+            }
+        }
+    }
 
-             // Calcular cuántos billetes se necesitan para cubrir el monto restante
-             int cantidadRequerida = montoRestante.divide(valorDenominacion, 0, RoundingMode.DOWN).intValue();
-             int cantidadUsada = Math.min(cantidadRequerida, cantidadPermitida);
+    /**
+     * Segunda pasada para cubrir el monto restante con billetes más pequeños.
+     */
+    private void aplicarSegundaPasada(BigDecimal montoRestante, List<Caja> cajasDisponibles, List<DetalleCajaRegistradora> detalles, Map<Caja, Integer> copiaCantidadesDisponibles) {
+        for (Caja caja : cajasDisponibles) {
+            if (montoRestante.compareTo(BigDecimal.ZERO) <= 0) break;
 
-             if (cantidadUsada > 0) {
-                 DetalleCajaRegistradora detalle = new DetalleCajaRegistradora();
-                 detalle.setCaja(caja);
-                 detalle.setCantidad(cantidadUsada);
-                 detalle.setTotal(valorDenominacion.multiply(BigDecimal.valueOf(cantidadUsada)));
-                 detalles.add(detalle);
+            BigDecimal valorDenominacion = caja.getDenominacion().getValor();
+            int cantidadDisponible = copiaCantidadesDisponibles.get(caja);
 
-                 montoRestante = montoRestante.subtract(detalle.getTotal());
-             }
-         }
-     }
+            if (cantidadDisponible <= 0) continue;
 
-     /**
-      * Unificar los detalles por denominación.
-      */
-     private List<DetalleCajaRegistradora> unificarDetalles(List<DetalleCajaRegistradora> detalles) {
-         Map<Caja, DetalleCajaRegistradora> detalleMap = new HashMap<>();
+            int cantidadRequerida = montoRestante.divide(valorDenominacion, 0, RoundingMode.DOWN).intValue();
+            int cantidadUsada = Math.min(cantidadRequerida, cantidadDisponible);
 
-         for (DetalleCajaRegistradora detalle : detalles) {
-             Caja caja = detalle.getCaja();
-             if (detalleMap.containsKey(caja)) {
-                 DetalleCajaRegistradora existente = detalleMap.get(caja);
-                 existente.setCantidad(existente.getCantidad() + detalle.getCantidad());
-                 existente.setTotal(existente.getTotal().add(detalle.getTotal()));
-             } else {
-                 detalleMap.put(caja, detalle);
-             }
-         }
+            if (cantidadUsada > 0) {
+                DetalleCajaRegistradora detalle = new DetalleCajaRegistradora();
+                detalle.setCaja(caja);
+                detalle.setCantidad(cantidadUsada);
+                detalle.setTotal(valorDenominacion.multiply(BigDecimal.valueOf(cantidadUsada)));
+                detalles.add(detalle);
 
-         return new ArrayList<>(detalleMap.values());
-     }
+                montoRestante = montoRestante.subtract(detalle.getTotal());
+                copiaCantidadesDisponibles.put(caja, cantidadDisponible - cantidadUsada);
+            }
+        }
+    }
 
-     /**
-      * Obtener las cajas disponibles para MEJOR_AJUSTE, ordenadas dinámicamente.
-      */
-     private List<Caja> obtenerCajasOrdenadas(BigDecimal montoTotal) {
-         String query = "SELECT c FROM Caja c WHERE c.cantidad > 0 ORDER BY c.denominacion.valor DESC, c.cantidad DESC";
-         EntityManager manager = org.openxava.jpa.XPersistence.getManager();
-         return manager.createQuery(query, Caja.class).getResultList();
-     }
- }
+    /**
+     * Unificar los detalles por denominación.
+     */
+    private List<DetalleCajaRegistradora> unificarDetalles(List<DetalleCajaRegistradora> detalles) {
+        Map<Caja, DetalleCajaRegistradora> detalleMap = new HashMap<>();
+
+        for (DetalleCajaRegistradora detalle : detalles) {
+            Caja caja = detalle.getCaja();
+            if (detalleMap.containsKey(caja)) {
+                DetalleCajaRegistradora existente = detalleMap.get(caja);
+                existente.setCantidad(existente.getCantidad() + detalle.getCantidad());
+                existente.setTotal(existente.getTotal().add(detalle.getTotal()));
+            } else {
+                detalleMap.put(caja, detalle);
+            }
+        }
+
+        return new ArrayList<>(detalleMap.values());
+    }
+
+    /**
+     * Calcular el total de dinero disponible en las cajas.
+     */
+    private BigDecimal calcularTotalDisponible() {
+        String query = "SELECT SUM(c.denominacion.valor * c.cantidad) FROM Caja c WHERE c.cantidad > 0";
+        EntityManager manager = org.openxava.jpa.XPersistence.getManager();
+        BigDecimal totalDisponible = (BigDecimal) manager.createQuery(query).getSingleResult();
+        return totalDisponible != null ? totalDisponible : BigDecimal.ZERO;
+    }
+
+    /**
+     * Obtener las cajas disponibles para MEJOR_AJUSTE, ordenadas dinámicamente.
+     */
+    private List<Caja> obtenerCajasOrdenadas() {
+        String query = "SELECT c FROM Caja c WHERE c.cantidad > 0 ORDER BY c.denominacion.valor DESC";
+        EntityManager manager = org.openxava.jpa.XPersistence.getManager();
+        return manager.createQuery(query, Caja.class).getResultList();
+    }
+}

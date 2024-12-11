@@ -15,6 +15,7 @@ import com.sta.cashtill.calculadores.*;
 import lombok.*;
 
 @View(members="id; denominacion")
+
 @View(name="salida", members="id")
 
 @Tab(properties = "denominacion.nombre, cantidad, total+",

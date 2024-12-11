@@ -1,11 +1,13 @@
 package com.sta.cashtill.modelo;
 
 import java.math.*;
+import java.util.*;
 
 import javax.persistence.*;
 
 import org.openxava.annotations.*;
 import org.openxava.calculators.*;
+import org.openxava.jpa.*;
 
 import com.sta.cashtill.acciones.*;
 import com.sta.cashtill.auxiliares.*;
@@ -17,11 +19,10 @@ import lombok.*;
 	  members = "movimientoCaja;" +
 			    "estrategiaPagos, importe;" +
 				"descripcion;" +
-			  	"detalle")
+			  	"detalle, cajasConCantidadMayorAZeroOrdenadas")
 
 @View( members = "categoria, total;" +
-				 "descripcion," +
-	  			 "detalle")
+				 "descripcion")
 
 @Entity
 @DiscriminatorValue("SALIDA")
@@ -43,6 +44,7 @@ public class CajaSalida extends CajaRegistradora {
 	@Required
 	@Enumerated(EnumType.STRING)
     @LabelFormat(LabelFormatType.SMALL)
+	@OnChange(CajaSalidaLimpiarColeccionAlCambiarEstrategiaAction.class)
     private EstrategiaPagos estrategiaPagos;
 		
     @Money
@@ -52,7 +54,14 @@ public class CajaSalida extends CajaRegistradora {
     @DefaultValueCalculator(value = ZeroBigDecimalCalculator.class)
     private BigDecimal importe;
     
- 
+    @SuppressWarnings("unchecked")
+    @ReadOnly 
+    @SimpleList
+    @ListProperties ("id, cantidad, total")
+    public Collection<Caja> getCajasConCantidadMayorAZeroOrdenadas() {
+        Query query = XPersistence.getManager().createQuery("from Caja c where c.cantidad > 0 order by c.total desc");
+        return query.getResultList();
+    }
     
     
  }
