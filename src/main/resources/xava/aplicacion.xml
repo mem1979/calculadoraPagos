@@ -1,0 +1,43 @@
+<?xml version = "1.0" encoding = "ISO-8859-1"?>
+
+<!DOCTYPE aplicacion SYSTEM "dtds/aplicacion.dtd">
+
+<aplicacion nombre="cashtill"> 
+	
+	<!--
+	Un módulo por defecto se asume para cada
+	controlador en <modulo-defecto/> 
+	-->
+	<modulo-defecto>		  
+		<controlador nombre="TypicalNotResetOnSave"/>		
+	</modulo-defecto>
+	
+	<!--
+	Podemos definir módulos adicionales, por ejemplo: 	
+	<modulo nombre="ProfesorSoloLectura">
+		<modelo nombre="Profesor"/>
+		<controlador nombre="Print"/>
+	</modulo>		
+	-->
+	
+	
+	<modulo nombre="CajaDashboard">
+	    <modelo nombre="CajaDashboard"/>
+	    <controlador nombre="CajaDashboard"/>
+	</modulo>
+		  
+	<modulo nombre="CajaRegistradora">
+	    <var-entorno nombre="XAVA_SEARCH_ACTION" valor="CRUD.searchReadOnly"/>  <!-- 1 -->
+	    <modelo nombre="CajaRegistradora"/>
+	    <controlador nombre="CajaRegistradora"/>
+	</modulo>
+	
+		<modulo nombre="Caja">
+	    <var-entorno nombre="XAVA_LIST_ACTION" valor=""/> 
+	    <modelo nombre="Caja"/>
+	    <controlador nombre="Caja"/>
+	</modulo>
+		
+		
+</aplicacion>
+
