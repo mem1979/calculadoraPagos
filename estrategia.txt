@@ -1,0 +1,10 @@
+Beneficios
+Inteligencia en la selección: Prioriza las denominaciones más altas y con mayor cantidad de billetes disponibles y las distribuye eficientemente.
+Equilibrio: Mantiene la disponibilidad de múltiples denominaciones para futuros pagos.
+Adaptabilidad: El límite dinámico asegura que las denominaciones no se agoten innecesariamente.
+Resultado esperado
+Con esta optimización:
+
+Se cubrirá el importe del pago utilizando la mejor distribución posible.
+Las denominaciones no se agotarán rápidamente, manteniendo un equilibrio en la caja.
+La solución es más robusta y precisa, adaptándose a diferentes escenarios de pago y disponibilidad.
