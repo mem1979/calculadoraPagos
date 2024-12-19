@@ -1,0 +1,8 @@
+/*C5*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C6*/SET SCHEMA PUBLIC
+INSERT INTO CAJAREGISTRADORA VALUES('ENTRADA','4028c65f93df42ea0193df5c18820000','RETIRO BANCARIO','Ingreso de Efectivo Extracci\u00f3n de Banco \u000aDetalle de billetes ingresados por Admin el 19/12/2024 11:39:34:\u000aBillete             Cantidad       Total          \u000a---------------------------------------------------\u000a$1Mil.-             6              $6000.00       \u000a',NULL,'2024-12-19 11:39:35.041000','ENTRADA',6000.00,'Admin',NULL,NULL,'402880cd93dc680d0193dc6af1790004')
+INSERT INTO CAJAREGISTRADORA_DETALLE VALUES('4028c65f93df42ea0193df5c18820000','$1Mil.-',6,6000.00)
+DELETE FROM CAJA WHERE ID='$1Mil.-'
+INSERT INTO CAJA VALUES('$1Mil.-',16,16000.00,'402880cd93dc680d0193dc6b9748000b')
+COMMIT

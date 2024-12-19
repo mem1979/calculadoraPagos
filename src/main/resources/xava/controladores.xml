@@ -1,0 +1,95 @@
+<?xml version = "1.0" encoding = "ISO-8859-1"?>
+
+<!DOCTYPE controladores SYSTEM "dtds/controladores.dtd">
+
+<controladores>
+    
+    <!-- Variable de entorno: 
+    <var-entorno nombre="cashtill_ANYO_DEFECTO" valor="2015"/>
+    -->
+    
+    <!-- Objeto de sesión:
+    <Objeto nombre="cashtill_anyoActivo" clase="java.lang.Integer" valor="2015" 
+            ambito="global"/>
+    -->
+    
+    <!-- Controlador:
+    <controlador nombre="Profesor">
+        <hereda-de controlador="Typical"/>
+        <accion nombre="new" icono="library-plus" atajo-de-teclado="Control N" 
+                clase="acciones.CrearProfesor"/>        
+    </controlador>
+    -->
+    
+    <controlador nombre="CajaRegistradora">
+       
+        <accion nombre="GENERAR EXCEL" modo="list"
+			clase="org.openxava.actions.GenerateReportAction"
+			imagen="excel.gif"
+			icono="file-excel">
+			<poner propiedad ="type" valor="csv"/>	
+		</accion>
+        
+        
+	        <accion nombre="INGRESO DE CAJA / COBROS"  modo="list" 
+	      	  clase="com.sta.cashtill.acciones.CajaEntradaAction">
+	       </accion>
+	       <accion nombre="SALIDA DE CAJA / PAGOS"  modo="list"
+	      	  clase="com.sta.cashtill.acciones.CajaSalidaAction">
+	       </accion>  
+	       <accion nombre="COMPROBANTE"  modo="detail" icono="printer" por-defecto="nunca"
+	      	  clase="com.sta.cashtill.acciones.CajaSalidaAction">
+	       </accion> 
+	       <accion nombre="GENERAR REPORTE DE CAJA DIARIA"  modo="list" icono="printer" por-defecto="nunca"
+	      	  clase="com.sta.cashtill.acciones.ImprimirReporteCaja">
+	       </accion>
+	       <accion nombre="ESTADO DE CAJA" modo="list" icono="cash-register" por-defecto="nunca"
+	      	  clase="com.sta.cashtill.acciones.VerEstadoDeCajaAction">
+	       </accion> 
+    </controlador>
+    
+
+    
+    <controlador nombre="Caja">
+        <hereda-de controlador="Print"/>
+	        <accion nombre="NuevoBillete" icono="cash-plus" modo="list"
+	      	  	clase="com.sta.cashtill.acciones.CajaNuevoBilleteAction">
+	       </accion>
+	       <accion nombre="AgregarNuevoBillete" icono="cash-plus" modo="detail"
+	       		clase="com.sta.cashtill.acciones.CajaSaveNewBilleteAction">
+	       </accion>
+	       
+	</controlador>
+    
+    <controlador nombre="MovimientoCajaCreation">
+		 <hereda-de controlador="NewCreation"/>
+		 <accion nombre="new" oculta="true"
+			 clase="com.sta.cashtill.acciones.CategoriaCrearAction">
+		 </accion>
+	</controlador>
+	 <controlador nombre="MovimientoCajaModification">
+		 <hereda-de controlador="Modification"/>
+		 <accion nombre="search" oculta="true"
+			 clase="com.sta.cashtill.acciones.CategoriaEditarAction">
+		 </accion>
+	</controlador>
+	
+	 <controlador nombre="MovimientoCaja">
+		 <accion nombre="ActualizarCajaEntrada" confirmar="true"
+			 clase="com.sta.cashtill.acciones.ActualizarCajaDesdeCajaEntradaAction">
+			 <poner propiedad ="resetAfter" valor="false"/>
+		 </accion>
+		 <accion nombre="ActualizarCajaSalida" confirmar="true"
+			 clase="com.sta.cashtill.acciones.ActualizarCajaDesdeCajaSalidaAction">
+			 <poner propiedad ="resetAfter" valor="false"/>
+		 </accion>
+		 <accion nombre="cancel" 
+			clase="org.openxava.actions.CancelDialogAction">
+		</accion>
+		<accion nombre="CalcularSalida$" oculta="true" icono = "calculator"
+			clase = "com.sta.cashtill.acciones.CajaSalidaGenerarDetalleAction">
+		</accion>	
+	</controlador>
+	
+   
+</controladores>
