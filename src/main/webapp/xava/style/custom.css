@@ -1,0 +1,16 @@
+
+/* Estilo para las filas de tipo ENTRADA */
+	.row-entrada {
+    color:#c3e6cb !important; /* Texto verde oscuro */
+}
+
+/* Estilo para las filas de tipo SALIDA */
+.row-SALIDA {
+	color: #f5c6cb !important;  
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Sombra suave para más resalte */
+    }
+
+/* Estilo para las filas de tipo AJUSTE */
+   .row-ajuste {
+     color: #ffe8a1 !important; /* Texto amarillo oscuro */
+}
