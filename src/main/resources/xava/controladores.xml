@@ -1,0 +1,91 @@
+<?xml version = "1.0" encoding = "ISO-8859-1"?>
+
+<!DOCTYPE controladores SYSTEM "dtds/controladores.dtd">
+
+<!-- 
+Documentación sobre controladores: 
+https://www.openxava.org/OpenXavaDoc/docs/controllers_es.html
+
+Controladores por defecto, incluidos en OpenXava (puedes extender de ellos):
+https://github.com/openxava/openxava/blob/master/openxava/src/main/resources/xava/default-controllers.xml
+ 
+Ejemplos de controladores (de la aplicación de pruebas):
+https://github.com/openxava/openxava/blob/master/openxavatest/src/main/resources/xava/controllers.xml
+-->
+
+<controladores>
+    
+<controlador nombre="CajaRegistradora">
+       <accion nombre="MIS REPORTES" modo="list"
+			clase="org.openxava.actions.MyReportsAction"
+			imagen="reports.png"
+			icono="library-books">
+		</accion>
+              
+	    <accion nombre="INGRESO DE CAJA / COBROS"  modo="list" 
+	      	  clase="com.sta.cashstill.acciones.NuevaCajaEntradaAction">
+	    </accion>
+	    
+	    <accion nombre="SALIDA DE CAJA / PAGOS"  modo="list"
+	      	  clase="com.sta.cashstill.acciones.NuevaCajaSalidaAction">
+	    </accion>  
+	    
+	    <accion nombre="REGISTRAR VUELTO"   modo="detail"
+	      	  clase="com.sta.cashstill.acciones.NuevaCajaSalidaVueltoAction">
+	    </accion>   
+	      
+	    <accion nombre="GENERAR REPORTE DE CAJA DIARIA"  modo="list" icono="printer" por-defecto="nunca"
+	      	  clase="com.sta.cashstill.acciones.ImprimirReporteCajaDiaria">
+	    </accion>
+	    
+	    <accion nombre="ESTADO DE CAJA" modo="list" icono="cash-register" por-defecto="nunca"
+	      	  clase="com.sta.cashstill.acciones.VerEstadoDeCajaAction">
+	    </accion> 
+</controlador>
+  
+  
+<controlador nombre="Caja">
+<hereda-de controlador="Print"/>
+	   <accion nombre="NuevoBillete" icono="cash-plus" modo="list"
+	      	  	clase="com.sta.cashstill.acciones.CajaNuevoBilleteAction">
+	   </accion>
+	   
+	   <accion nombre="AgregarNuevoBillete" icono="cash-plus" modo="detail"
+	       		clase="com.sta.cashstill.acciones.CajaNuevoBilleteSaveAction">
+	   </accion>
+</controlador>
+
+
+<controlador nombre="MovimientoCaja">
+	  	 <accion nombre="ActualizarCaja" confirmar="true"
+			 clase="com.sta.cashstill.acciones.ActualizarCajaRegistrarMovimientoAction">
+			 <poner propiedad ="resetAfter" valor="false"/>
+		 </accion>
+	 
+		 <accion nombre="cancel" 
+			clase="org.openxava.actions.CancelDialogAction">
+		</accion>
+		
+		<accion nombre="CalcularSalida$" oculta="true" icono = "calculator"
+			clase = "com.sta.cashstill.acciones.CajaSalidaCalcularDetalleAction">
+		</accion>	
+	</controlador>
+
+
+<controlador nombre="MovimientoCajaCreation">
+<hereda-de controlador="NewCreation"/>
+		 <accion nombre="new" oculta="true"
+			 clase="com.sta.cashstill.acciones.CategoriaCrearAction">
+		 </accion>
+</controlador>
+
+
+ <controlador nombre="MovimientoCajaModification">
+ <hereda-de controlador="Modification"/>
+		 <accion nombre="search" oculta="true"
+			 clase="com.sta.cashstill.acciones.CategoriaEditarAction">
+		 </accion>
+</controlador>
+
+    
+</controladores>

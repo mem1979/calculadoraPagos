@@ -1,0 +1,218 @@
+#beta {
+    position: absolute;
+    right: -31px; /* Ajusta la posición horizontal */
+    top: -10px; /* Ajusta la posición vertical */
+    color: white;
+    font-size: 110%; /* Reduce el tamaño del texto */
+    font-weight: bold;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    background: red;
+    padding: 25px 25px 5px 25px; /* Reduce el tamaño general del cuadro */
+    z-index: 9999; /* Asegura que siempre esté por encima de otros elementos */
+    pointer-events: none; /* Evita interferencias con la interacción del usuario */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Opcional: Agrega un efecto de sombra para mejorar la visibilidad */
+}
+
+/* Estilo icono Calculadora de Pagos */
+i.mdi.mdi-calculator {
+    color: #000; /* Color inicial del icono */
+    font-size: 30px; /* Tamaño del icono */
+    margin: 10px; /* Margen del icono */
+    transition: all 0.3s ease; /* Transición suave para los cambios */
+    cursor: pointer; /* Cambia el cursor a mano para indicar que es interactivo */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Sombra inicial */
+    border-radius: 4px; /* Bordes suaves, si es necesario */
+    background-color: #fff; /* Fondo para resaltar la sombra */
+    padding: 5px; /* Espacio alrededor del ícono */
+}
+
+/* Efecto al pasar el mouse */
+i.mdi.mdi-calculator:hover {
+    color: #007bff; /* Cambia el color al pasar el mouse */
+    transform: scale(1.1) translateY(-2px); /* Crece y se eleva un poco */
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4); /* Sombra más grande y definida */
+}
+
+/* Efecto al hacer clic */
+i.mdi.mdi-calculator:active {
+    color: #0056b3; /* Cambia el color al hacer clic */
+    transform: scale(0.95) translateY(1px); /* Se hunde ligeramente */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Sombra más sutil al presionar */
+}
+
+/* Estilo icono Nuevo Billete */
+i.mdi.mdi-cash-plus {
+    font-size: 25px; /* Tamaño del icono */
+    transition: all 0.3s ease; /* Transición suave para los cambios */
+    cursor: pointer; /* Cambia el cursor a mano para indicar que es interactivo */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Sombra inicial */
+    border-radius: 4px; /* Bordes suaves, si es necesario */
+ 
+}
+
+/* Efecto al pasar el mouse */
+i.mdi.mdi-cash-plus:hover {
+    color: #007bff; /* Cambia el color al pasar el mouse */
+    transform: scale(1.1) translateY(-2px); /* Crece y se eleva un poco */
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4); /* Sombra más grande y definida */
+}
+
+/* Efecto al hacer clic */
+i.mdi.mdi-cash-plus:active {
+    color: #0056b3; /* Cambia el color al hacer clic */
+    transform: scale(0.95) translateY(1px); /* Se hunde ligeramente */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Sombra más sutil al presionar */
+}
+
+
+
+.mdi-calendar-clock::before {
+  content: "\F0F0"; /* El icono que se está usando */
+  display: inline-block; /* Asegura que se comporte como un elemento en línea con bloque */
+  margin-right: 0.5em; /* Espacio a la derecha para separar el icono del texto */
+  vertical-align: middle; /* Opcional: centra verticalmente el icono con el texto */
+}
+
+.ox-active-section {
+    box-shadow: 1px 4px 10px rgba(0, 0, 0, 0.5); /* Agrega sombra */
+    padding: 5px; /* Añade algo de padding */
+}
+
+
+/* separacion de los campos margen Izquierdo */
+.ox-detail {
+    margin: 8px 10px 0px 20px;
+    padding-top: 2px;
+}
+.ox-sections {
+    margin-left: 5px; /* Ajusta el valor según el espacio deseado */
+} 
+
+@keyframes scale-up-horizontal-left {
+  0% {
+    transform: scaleX(0.4);
+    transform-origin: left center;
+  }
+  100% {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+}
+
+/* Aplicación de la animación a #modules_list .selected */
+#modules_list .selected {
+  /* Aquí aplicamos la clase con la animación */
+  animation: scale-up-horizontal-left 0.5s;
+}
+
+
+
+
+/* Estilo para las filas de tipo ENTRADA */
+	.row-entrada {
+    color:#c3e6cb !important; /* Texto verde oscuro */
+}
+
+/* Estilo para las filas de tipo SALIDA */
+.row-SALIDA {
+	color: #f5c6cb !important;  
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Sombra suave para más resalte */
+    }
+
+/* Estilo para las filas de tipo AJUSTE */
+   .row-ajuste {
+     color: #ffe8a1 !important; /* Texto amarillo oscuro */
+}
+
+/* Estilos para COLUMNA 1 "ENTRADA Claro" */
+  .c1-salida td:nth-of-type(3) {
+  	color: #ff0000; /* Texto rojo oscuro */
+    font-weight: bold;         /* Texto en negrita */
+   	font-size: 1.2em;          /* Incrementar tamaño del texto */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Sombra suave para más resalte */
+ }
+   
+
+
+
+
+/* Icono de cerrar con efectos de hover y pulsado */
+.ox-message-box .mdi-close {
+    text-shadow: 3px 2px 3px black;
+    color: #efdede;
+    float: right;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease; /* Transición suave */
+}
+
+.ox-message-box .mdi-close:hover {
+    color: #ff6f6f; /* Cambia el color al pasar el cursor */
+    transform: scale(2.0); /* Agranda ligeramente el icono */
+}
+
+.ox-message-box .mdi-close:active {
+    transform: scale(0.9); /* Reduce el tamaño al hacer clic */
+    color: #ffffff; /* Cambia el color al hacer clic */
+}
+
+.ox-message-box {
+    font-size: medium;
+    font-weight: normal;
+    color: var(--message-box-color);
+    padding: 10px;
+    border: 0px;
+    margin-bottom: 12px;
+    border-radius: 15px;
+    box-shadow: 1px 2px 8px var(--message-box-shadow);
+ }
+ 
+ 
+.ox-active .ox-section-tab {
+    color: var(--active-section-tab-color);
+    border-bottom-color: var(--active-section-tab-bottom-color);
+    font-size: 1.2em; /* Aumenta un poco el tamaño de la tipografía */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Leve sombreado en la tipografía */
+    border: 2px solid var(--active-section-tab-border-color); /* Aplica un borde */
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3); /* Sombra alrededor del borde */
+}
+/* Animación proporcionada 
+.blur-in-expand {
+  animation: blur-in-expand 0.3s linear both;
+}
+
+@keyframes blur-in-expand {
+  0% {
+    transform: scale(0);
+    filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+/* Estilos de .ox-section */
+.ox-section {
+  position: relative;
+  margin: 8px -10px 10px -10px;
+  padding: 3px 10px 0px 0px;
+  /* Degradado que mezcla el color claro con la transparencia */
+  background: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), var(--section-background);
+  
+  /* Aplicación de la animación solo al box-shadow */
+  animation: box-shadow-in 0.5s linear both;
+}
+
+/* Animación para el box-shadow */
+@keyframes box-shadow-in {
+  0% {
+    box-shadow: 0 0px 0px -2px rgba(0, 0, 0, 0); /* Sin sombra al inicio */
+  }
+  100% {
+    box-shadow: 0 4px 4px -2px rgba(0, 0, 0, 0.2); /* Línea sombreada al final */
+  }
+}
