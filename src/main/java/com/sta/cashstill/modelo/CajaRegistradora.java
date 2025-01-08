@@ -59,6 +59,7 @@ abstract public class CajaRegistradora extends Identifiable {
     @ReadOnly
     @DefaultValueCalculator(FalseCalculator.class)
     @Column(columnDefinition="BOOLEAN DEFAULT FALSE") // Para llenar con falses en lugar de con nulos
+    @LabelFormat(LabelFormatType.NO_LABEL)
     boolean conVuelto;
     
     @Money
@@ -118,6 +119,9 @@ abstract public class CajaRegistradora extends Identifiable {
 	@Column(length = 30)
 	String categoria;
 	
+	@Version
+	private Integer version;
+	
 	@PreUpdate @PrePersist
     private void Actualizar() {
 	   	setUsuario(getObtenerNombreUsuario());
@@ -174,9 +178,9 @@ abstract public class CajaRegistradora extends Identifiable {
    
       
    public String getGenerarDescripcion(String usuario, Date fecha) {
-	   // Obtener la descripción actual si existe
-       String descripcionActual = Optional.ofNullable(getDescripcion()).orElse("");
-	   
+	    // Obtener la descripción actual si existe
+	    String descripcionActual = Optional.ofNullable(getDescripcion()).orElse("");
+
 	    // Obtener fecha formateada
 	    String fechaFormateada = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(fecha);
 
@@ -196,7 +200,6 @@ abstract public class CajaRegistradora extends Identifiable {
 	    for (DetalleCajaRegistradora detalle : this.detalle) {
 	        String idCaja = Optional.ofNullable(detalle.getCaja()).map(Caja::getDenominacion).orElse("N/A");
 	        DetalleCajaRegistradora existente = detalleUnificado.get(idCaja);
-
 	        if (existente == null) {
 	            // Crear un nuevo detalle unificado
 	            DetalleCajaRegistradora nuevoDetalle = new DetalleCajaRegistradora();
@@ -228,11 +231,18 @@ abstract public class CajaRegistradora extends Identifiable {
 	        String idCaja = Optional.ofNullable(detalle.getCaja()).map(Caja::getDenominacion).orElse("N/A");
 	        int cantidad = Optional.ofNullable(detalle.getCantidad()).orElse(0);
 	        BigDecimal total = Optional.ofNullable(detalle.getTotal()).orElse(BigDecimal.ZERO);
-
 	        detalleDescripcion.append(String.format(
 	            "%-20s%-15d$%-14s\n",
 	            idCaja, cantidad, total.toPlainString()
 	        ));
+	    }
+
+	    // Agregar información de Importe, Pago y Vuelto si corresponde
+	    if (vuelto != null && vuelto.compareTo(BigDecimal.ZERO) > 0) {
+	        detalleDescripcion.append("\n");
+	        detalleDescripcion.append(String.format("Importe: $%s - ", importe));
+	        detalleDescripcion.append(String.format("Pago: $%s - ", getTotalDetalle().toPlainString()));
+	        detalleDescripcion.append(String.format("Vuelto: $%s.", vuelto.toPlainString()));
 	    }
 
 	    return detalleDescripcion.toString();

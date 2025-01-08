@@ -30,7 +30,7 @@ https://github.com/openxava/openxava/blob/master/openxavatest/src/main/resources
 	      	  clase="com.sta.cashstill.acciones.NuevaCajaSalidaAction">
 	    </accion>  
 	    
-	    <accion nombre="REGISTRAR VUELTO"   modo="detail"
+	    <accion nombre="REGISTRAR VUELTO"   modo="detail" por-defecto="nunca" oculta="true"
 	      	  clase="com.sta.cashstill.acciones.NuevaCajaSalidaVueltoAction">
 	    </accion>   
 	      
@@ -59,6 +59,16 @@ https://github.com/openxava/openxava/blob/master/openxavatest/src/main/resources
 <controlador nombre="MovimientoCaja">
 	  	 <accion nombre="ActualizarCaja" confirmar="true"
 			 clase="com.sta.cashstill.acciones.ActualizarCajaRegistrarMovimientoAction">
+			 <poner propiedad ="resetAfter" valor="false"/>
+		 </accion>
+		 
+		  <accion nombre="ActualizarCajaSalida" confirmar="true"
+			 clase="com.sta.cashstill.acciones.ActualizarCajaRegistrarMovimientoSalidaAction">
+			 <poner propiedad ="resetAfter" valor="false"/>
+		 </accion>
+		 
+		  <accion nombre="ActualizarCajaEntrada" confirmar="true"
+			 clase="com.sta.cashstill.acciones.ActualizarCajaRegistrarMovimientoEntradaAction">
 			 <poner propiedad ="resetAfter" valor="false"/>
 		 </accion>
 	 

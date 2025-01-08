@@ -91,6 +91,9 @@ public class Caja extends Identifiable {
         // Ajustar la lógica según tus necesidades:
         return valor.multiply(BigDecimal.valueOf(cantidad));
     }
+    
+    @Version
+    private Integer version;
 
     /**
      * Se ejecuta antes de persistir una nueva entidad.

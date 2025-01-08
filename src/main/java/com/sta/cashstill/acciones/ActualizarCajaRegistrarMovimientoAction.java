@@ -39,7 +39,7 @@ public class ActualizarCajaRegistrarMovimientoAction extends SaveAction {
 
             if (movimientoCaja != null && movimientoCaja.getNombre().equalsIgnoreCase("VUELTO")) {
                 getPreviousView().setValueNotifying("conVuelto", true);
-                this.esVuelto = true;
+                this.setEsVuelto(true);
             }
         }
 
@@ -64,14 +64,14 @@ public class ActualizarCajaRegistrarMovimientoAction extends SaveAction {
         // Cerrar el diálogo
         closeDialog();
 
-    /*    // Mensajes finales según el flujo
+        // Mensajes finales según el flujo
         if (!esVuelto) {
             addMessage("Movimiento registrado y cajas actualizadas correctamente.");
         } else {
             // Ejecutar la acción de actualización de la entrada original
-         //   executeAction("MovimientoCaja.ActualizarCaja");
+            executeAction("MovimientoCaja.ActualizarCaja");
             addMessage("Movimiento y vuelto registrado. Cajas actualizadas correctamente.");
-        }*/
+        }
     }
 
     /**
@@ -100,4 +100,12 @@ public class ActualizarCajaRegistrarMovimientoAction extends SaveAction {
         }
         XPersistence.getManager().flush();
     }
+
+	public boolean isEsVuelto() {
+		return esVuelto;
+	}
+
+	public void setEsVuelto(boolean esVuelto) {
+		this.esVuelto = esVuelto;
+	}
 }

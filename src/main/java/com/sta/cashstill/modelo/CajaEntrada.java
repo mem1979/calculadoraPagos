@@ -16,9 +16,9 @@ import lombok.*;
 
 @View(name="entrada",
  	  members = 
- 	  "movimientoCaja, importe;" +
- 	  "Detalle de INGRESO $ {Caja.NuevoBillete(), conVuelto; detalle;}"+
- 	  "Descripcion {documento; descripcion }" )
+ 	  "movimientoCaja, importe, conVuelto;" +
+ 	  "Detalle de INGRESO $ {Caja.NuevoBillete(); detalle;}"+
+ 	  "Descripcion {documento; descripcion}" )
 
 @Tab(properties = "movimiento, fechaHora, usuario, totalDetalle, movimientoCaja.nombre")
 
