@@ -13,7 +13,7 @@ import lombok.*;
 
 public class HistoricoDeCaja {
 	
-	 private String id;
+	 private String denominacion;
 	 
 	 private int cantidad;
 	 

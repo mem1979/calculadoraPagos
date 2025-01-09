@@ -46,22 +46,18 @@ https://github.com/openxava/openxava/blob/master/openxavatest/src/main/resources
   
 <controlador nombre="Caja">
 <hereda-de controlador="Print"/>
-	   <accion nombre="NuevoBillete" icono="cash-plus" modo="list"
+	   <accion nombre="NuevoBillete" icono="cash-multiple" modo="list"
 	      	  	clase="com.sta.cashstill.acciones.CajaNuevoBilleteAction">
 	   </accion>
 	   
-	   <accion nombre="AgregarNuevoBillete" icono="cash-plus" modo="detail"
+	   <accion nombre="AgregarNuevoBillete" icono="cash-multiple" modo="detail"
 	       		clase="com.sta.cashstill.acciones.CajaNuevoBilleteSaveAction">
 	   </accion>
 </controlador>
 
 
 <controlador nombre="MovimientoCaja">
-	  	 <accion nombre="ActualizarCaja" confirmar="true"
-			 clase="com.sta.cashstill.acciones.ActualizarCajaRegistrarMovimientoAction">
-			 <poner propiedad ="resetAfter" valor="false"/>
-		 </accion>
-		 
+	 			 
 		  <accion nombre="ActualizarCajaSalida" confirmar="true"
 			 clase="com.sta.cashstill.acciones.ActualizarCajaRegistrarMovimientoSalidaAction">
 			 <poner propiedad ="resetAfter" valor="false"/>

@@ -42,7 +42,7 @@ i.mdi.mdi-calculator:active {
 }
 
 /* Estilo icono Nuevo Billete */
-i.mdi.mdi-cash-plus {
+i.mdi.mdi-cash-multiple {
     font-size: 25px; /* Tamaño del icono */
     transition: all 0.3s ease; /* Transición suave para los cambios */
     cursor: pointer; /* Cambia el cursor a mano para indicar que es interactivo */
@@ -52,14 +52,14 @@ i.mdi.mdi-cash-plus {
 }
 
 /* Efecto al pasar el mouse */
-i.mdi.mdi-cash-plus:hover {
+i.mdi.mdi-cash-multiple:hover {
     color: #007bff; /* Cambia el color al pasar el mouse */
     transform: scale(1.1) translateY(-2px); /* Crece y se eleva un poco */
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4); /* Sombra más grande y definida */
 }
 
 /* Efecto al hacer clic */
-i.mdi.mdi-cash-plus:active {
+i.mdi.mdi-cash-multiple:active {
     color: #0056b3; /* Cambia el color al hacer clic */
     transform: scale(0.95) translateY(1px); /* Se hunde ligeramente */
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Sombra más sutil al presionar */

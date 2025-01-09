@@ -24,7 +24,7 @@ import lombok.*;
                 "historicoDeCaja")
 
 @Tab(editors ="List, Charts",
-     properties="fecha, totalEntrada, totalSalida, totalGeneral",
+     properties="fecha, totalEntrada+, totalSalida+, balance+, totalGeneral+",
      defaultOrder="${fecha} desc")
 
 
@@ -37,7 +37,6 @@ public class CajaHistorica extends Identifiable implements Job {
     private Date fecha;
 
     @Money
-    @Depends("fecha")
     public BigDecimal getCalculaTotalEntrada() {
         try {
             return (BigDecimal) XPersistence.getManager()
@@ -56,7 +55,6 @@ public class CajaHistorica extends Identifiable implements Job {
     private BigDecimal totalEntrada;
 
     @Money
-    @Depends("fecha")
     public BigDecimal getCalculaTotalSalida() {
         try {
             return (BigDecimal) XPersistence.getManager()
@@ -75,7 +73,6 @@ public class CajaHistorica extends Identifiable implements Job {
     private BigDecimal totalSalida;
 
     @Money
-    @Depends("calculaTotalEntrada, calculaTotalSalida, fecha")
     public BigDecimal getCalculaBalance() {
         return getCalculaTotalEntrada().add(getCalculaTotalSalida());
     } 
@@ -85,7 +82,6 @@ public class CajaHistorica extends Identifiable implements Job {
     private BigDecimal balance;
     
     @Money
-    @Depends("calculaBalance, fecha")
     public BigDecimal getCalculaTotalGeneral() {
         Calendar yearStart = Calendar.getInstance();
         yearStart.setTime(this.fecha);
@@ -119,23 +115,23 @@ public class CajaHistorica extends Identifiable implements Job {
 
     @ReadOnly
     @ElementCollection
-    @ListProperties(value = "id, cantidad, total+")
+    @ListProperties(value = "denominacion, cantidad, total+")
     private List<HistoricoDeCaja> historicoDeCaja;
 
     @SuppressWarnings("unchecked")
     @SimpleList
-    @ListProperties("id, cantidad, total+")
+    @ListProperties("denominacion, cantidad, total+")
     @ReadOnly
     public List<HistoricoDeCaja> getHistoricoDeCajaCalculado() {
         List<HistoricoDeCaja> resultado = new ArrayList<>();
         try {
             Query query = XPersistence.getManager().createQuery(
-                "FROM Caja c WHERE c.cantidad > 0 ORDER BY c.denominacion.valor DESC", Caja.class);
+                "FROM Caja c WHERE c.cantidad > 0 ORDER BY c.valor DESC", Caja.class);
             List<Caja> cajas = query.getResultList();
 
             for (Caja caja : cajas) {
                 HistoricoDeCaja historico = new HistoricoDeCaja();
-                historico.setId(String.valueOf(caja.getId()));
+                historico.setDenominacion(String.valueOf(caja.getDenominacion()));
                 historico.setCantidad(caja.getCantidad());
                 historico.setTotal(caja.getTotal() != null ? caja.getTotal() : BigDecimal.ZERO);
                 resultado.add(historico);
@@ -160,7 +156,7 @@ public class CajaHistorica extends Identifiable implements Job {
             
             BigDecimal totalEntrada = cajaTemporal.getCalculaTotalEntrada();
             BigDecimal totalSalida = cajaTemporal.getCalculaTotalSalida();
-
+          
             // Log para depuración
             System.out.println("Total Entrada calculado: " + totalEntrada);
             System.out.println("Total Salida calculado: " + totalSalida);
