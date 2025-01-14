@@ -9,7 +9,7 @@
 	controlador en <modulo-defecto/> 
 	-->
 	<modulo-defecto>		  
-		<controlador nombre="Typical"/>		
+		<controlador nombre="TypicalNotResetOnSave"/>		
 	</modulo-defecto>
 	
 	<!--

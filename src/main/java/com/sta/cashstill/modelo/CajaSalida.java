@@ -15,7 +15,7 @@ import lombok.*;
 @View(name="salida",
 members = 
 		 "movimientoCaja, importe, conVuelto;" +
-		 "Detalle de SALIDA $ {MovimientoCaja.CalcularSalida$(); detalle, cajaOrdenada;};" +
+		 "Detalle de SALIDA $ {MovimientosDeCaja.CalcularSalida$(); detalle, cajaOrdenada;};" +
 		 "Descripcion {documento; descripcion };")
 
 @View(members = "categoria, total;" +

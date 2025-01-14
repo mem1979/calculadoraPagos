@@ -12,7 +12,7 @@ public class NuevaCajaEntradaAction extends ViewBaseAction {
         	 getView().setModelName("CajaEntrada");
         	 getView().setViewName("entrada");
         	 getView().setTitle("INGRESO DE EFECTIVO + $");
-        	 addActions("MovimientoCaja.ActualizarCajaEntrada", "Dialog.cancel");
+        	 addActions("MovimientosDeCaja.ActualizarCajaEntrada", "Dialog.cancel");
         	            
             } catch (Exception ex) {
             ex.printStackTrace();

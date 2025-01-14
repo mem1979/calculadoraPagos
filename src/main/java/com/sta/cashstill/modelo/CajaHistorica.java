@@ -2,6 +2,7 @@
 package com.sta.cashstill.modelo;
 
 import java.math.*;
+import java.time.*;
 import java.util.*;
 import java.util.Calendar;
 
@@ -24,7 +25,7 @@ import lombok.*;
                 "historicoDeCaja")
 
 @Tab(editors ="List, Charts",
-     properties="fecha, totalEntrada+, totalSalida+, balance+, totalGeneral+",
+     properties="fechaCierre, totalEntrada+, totalSalida+, balance+, totalGeneral+",
      defaultOrder="${fecha} desc")
 
 
@@ -35,6 +36,9 @@ public class CajaHistorica extends Identifiable implements Job {
 	@Column(nullable = false)
     @DefaultValueCalculator(CurrentDateCalculator.class)
     private Date fecha;
+	
+	@DefaultValueCalculator(CurrentLocalDateCalculator.class)
+    private LocalDate fechaCierre;
 
     @Money
     public BigDecimal getCalculaTotalEntrada() {
@@ -174,6 +178,7 @@ public class CajaHistorica extends Identifiable implements Job {
 
             CajaHistorica cajaHistorica = new CajaHistorica();
             cajaHistorica.setFecha(new Date());
+            cajaHistorica.setFechaCierre(LocalDate.now());
             cajaHistorica.setTotalEntrada(totalEntrada);
             cajaHistorica.setTotalSalida(totalSalida);
             cajaHistorica.setBalance(cajaHistorica.getCalculaBalance());

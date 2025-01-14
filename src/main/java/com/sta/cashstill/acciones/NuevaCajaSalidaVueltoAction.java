@@ -15,16 +15,16 @@ public class NuevaCajaSalidaVueltoAction extends ViewBaseAction {
 	  @Override
 	    public void execute() throws Exception {
 	        try {
-	            // Elimina las acciones innecesarias
+	         // Elimina las acciones innecesarias
 	            removeActions("CajaRegistradora.REGISTRAR VUELTO");
 
-	            // Obtener o crear el movimiento 'VUELTO'
+	         // Obtener o crear el movimiento 'VUELTO'
 	            String movimientoId = obtenerOCrearMovimiento("VUELTO");
 
-	            // Obtener el valor del campo "vuelto"
+	         // Obtener el valor del campo "vuelto"
 	            BigDecimal vuelto = (BigDecimal) getView().getValue("vuelto");
 
-	            // Configurar la vista para la salida de efectivo
+	         // Configurar la vista para la salida de efectivo
 	            showDialog();
 	            getView().setModelName("CajaSalida");
 	            getView().setViewName("salida");
@@ -35,7 +35,7 @@ public class NuevaCajaSalidaVueltoAction extends ViewBaseAction {
 
 	            getView().setValue("importe", vuelto);
 	            getView().setEditable("importe", false);
-	            addActions("MovimientoCaja.ActualizarCajaSalida", "Dialog.cancel");
+	            addActions("MovimientosDeCaja.ActualizarCajaSalida", "Dialog.cancel");
 
 	        } catch (Exception ex) {
 	            ex.printStackTrace();

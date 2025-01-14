@@ -16,11 +16,11 @@ public class SchedulerConfig implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         try {
-            // Crear el Job directamente con la clase CajaHistorica
+         // Crear el Job directamente con la clase CajaHistorica
             JobDetail job = JobBuilder.newJob(CajaHistorica.class)
                     .withIdentity("cajaHistoricaJob", "group1").build();
 
-            // Crear el Trigger para ejecutar cada día a las 23:59
+         // Crear el Trigger para ejecutar cada día a las 23:59
             Trigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity("cajaHistoricaTrigger", "group1")
                     .withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(23, 59))
@@ -34,7 +34,7 @@ public class SchedulerConfig implements ServletContextListener {
                             .repeatForever()) // Repetir indefinidamente
                     .build(); */
 
-            // Configurar el Scheduler
+         // Configurar el Scheduler
             scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.start();
             scheduler.scheduleJob(job, trigger);

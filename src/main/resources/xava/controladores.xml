@@ -56,7 +56,7 @@ https://github.com/openxava/openxava/blob/master/openxavatest/src/main/resources
 </controlador>
 
 
-<controlador nombre="MovimientoCaja">
+<controlador nombre="MovimientosDeCaja">
 	 			 
 		  <accion nombre="ActualizarCajaSalida" confirmar="true"
 			 clase="com.sta.cashstill.acciones.ActualizarCajaRegistrarMovimientoSalidaAction">

@@ -43,8 +43,8 @@ public class ActualizarCajaRegistrarMovimientoSalidaAction extends BaseActualiza
           getView().setValueNotifying("conVuelto", true);
           getView().setEditable(false);
           returnToPreviousControllers();
-          addActions("MovimientoCaja.ActualizarCajaEntrada");
-          addInfo("Actualice el Ingreso de Caja. La Salida por el Exedente ya fue registrado");
+          addActions("MovimientosDeCaja.ActualizarCajaEntrada");
+          addInfo("Confirme el Ingreso de Caja!. La Salida por el Exedente ya fue registrado");
          }
     }
 }
