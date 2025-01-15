@@ -37,6 +37,12 @@
 	    <modelo nombre="Caja"/>
 	    <controlador nombre="Caja"/>
 	</modulo>	
+	
+	<modulo nombre="MovimientoCaja">
+	    <var-entorno nombre="XAVA_LIST_ACTION" valor=""/>    
+	    <modelo nombre="MovimientoCaja"/>
+	    <controlador nombre="MovimientoCaja"/>
+	</modulo>
 		
 </aplicacion>
 

@@ -53,6 +53,37 @@ https://github.com/openxava/openxava/blob/master/openxavatest/src/main/resources
 	   <accion nombre="AgregarNuevoBillete" icono="cash-multiple" modo="detail"
 	       		clase="com.sta.cashstill.acciones.CajaNuevoBilleteSaveAction">
 	   </accion>
+	   
+	   <accion nombre="deleteSelected" modo="list" confirmar="true"
+			procesar-elementos-seleccionados="true"
+			imagen="delete.gif"
+			icono="delete"			 
+			clase="org.openxava.actions.DeleteSelectedAction"
+			atajo-de-teclado="Control D"/>				
+		
+		<accion nombre="deleteRow" modo="NONE" confirmar="true"
+			clase="org.openxava.actions.DeleteSelectedAction"
+			imagen="delete.gif"
+			icono="delete"
+			en-cada-fila="true"/>
+</controlador>
+
+
+<controlador nombre="MovimientosDeCaja">
+<hereda-de controlador="Print"/>
+
+		<accion nombre="deleteSelected" modo="list" confirmar="true"
+			procesar-elementos-seleccionados="true"
+			imagen="delete.gif"
+			icono="delete"			 
+			clase="org.openxava.actions.DeleteSelectedAction"
+			atajo-de-teclado="Control D"/>				
+		
+		<accion nombre="deleteRow" modo="NONE" confirmar="true"
+			clase="org.openxava.actions.DeleteSelectedAction"
+			imagen="delete.gif"
+			icono="delete"
+			en-cada-fila="true"/>
 </controlador>
 
 
