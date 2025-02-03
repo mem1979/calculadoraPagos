@@ -17,12 +17,22 @@
 	correspodiente a tu base de datos al pom.xml de tu proyecto.	
 	-->
 	 
-	<!-- HSQLDB -->   	
+
     <Resource name="jdbc/cashstillDS" auth="Container" type="javax.sql.DataSource"
 	      maxTotal="20" maxIdle="5" maxWaitMillis="10000"
 	      username="sa" password="" 
 	      driverClassName="org.hsqldb.jdbc.JDBCDriver"
-	      url="jdbc:hsqldb:hsql://localhost:1666"/>
+	      url="jdbc:hsqldb:/home/mmosquer/jvm/apache-tomcat-9.0.60/domains/sta-gestion.com/data/cashstill-db"/> 
+
+	 
+	 
+	<!-- HSQLDB  	
+    <Resource name="jdbc/cashstillDS" auth="Container" type="javax.sql.DataSource"
+	      maxTotal="20" maxIdle="5" maxWaitMillis="10000"
+	      username="sa" password="" 
+	      driverClassName="org.hsqldb.jdbc.JDBCDriver"
+	      url="jdbc:hsqldb:hsql://localhost:1666"/> 
+	-->        
 	      
 	<!-- MySQL       
     <Resource name="jdbc/cashstillDS" auth="Container" type="javax.sql.DataSource"

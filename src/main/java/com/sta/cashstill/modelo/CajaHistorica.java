@@ -25,7 +25,7 @@ import lombok.*;
                 "historicoDeCaja")
 
 @Tab(editors ="List, Charts",
-     properties="fechaCierre, totalEntrada+, totalSalida+, balance+, totalGeneral+",
+     properties="fechaCierre, totalEntrada, totalSalida, balance, totalGeneral",
      defaultOrder="${fecha} desc")
 
 
@@ -86,34 +86,6 @@ public class CajaHistorica extends Identifiable implements Job {
     private BigDecimal balance;
     
     @Money
-    public BigDecimal getCalculaTotalGeneral() {
-        Calendar yearStart = Calendar.getInstance();
-        yearStart.setTime(this.fecha);
-        yearStart.set(Calendar.MONTH, Calendar.JANUARY);
-        yearStart.set(Calendar.DAY_OF_MONTH, 1);
-        yearStart.set(Calendar.HOUR_OF_DAY, 0);
-        yearStart.set(Calendar.MINUTE, 0);
-        yearStart.set(Calendar.SECOND, 0);
-        yearStart.set(Calendar.MILLISECOND, 0);
-
-        Calendar yearEnd = (Calendar) yearStart.clone();
-        yearEnd.add(Calendar.YEAR, 1);
-
-        try {
-            BigDecimal acumulado = (BigDecimal) XPersistence.getManager()
-                .createQuery("SELECT COALESCE(SUM(h.balance), 0) FROM CajaHistorica h WHERE h.fecha >= :yearStart AND h.fecha < :yearEnd")
-                .setParameter("yearStart", yearStart.getTime())
-                .setParameter("yearEnd", yearEnd.getTime())
-                .getSingleResult();
-
-            return acumulado != null ? acumulado : BigDecimal.ZERO;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return BigDecimal.ZERO;
-        }
-    }
-
-    @Money
     @LargeDisplay(icon = "cash-register")
     private BigDecimal totalGeneral;
 
@@ -128,6 +100,8 @@ public class CajaHistorica extends Identifiable implements Job {
     @ReadOnly
     public List<HistoricoDeCaja> getHistoricoDeCajaCalculado() {
         List<HistoricoDeCaja> resultado = new ArrayList<>();
+        BigDecimal totalGeneralCalculado = BigDecimal.ZERO; // Inicializamos el total de cajas en cero.
+
         try {
             Query query = XPersistence.getManager().createQuery(
                 "FROM Caja c WHERE c.cantidad > 0 ORDER BY c.valor DESC", Caja.class);
@@ -138,11 +112,19 @@ public class CajaHistorica extends Identifiable implements Job {
                 historico.setDenominacion(String.valueOf(caja.getDenominacion()));
                 historico.setCantidad(caja.getCantidad());
                 historico.setTotal(caja.getTotal() != null ? caja.getTotal() : BigDecimal.ZERO);
+                
+                // Sumar el total al acumulador.
+                totalGeneralCalculado = totalGeneralCalculado.add(historico.getTotal());
+                
                 resultado.add(historico);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // Asignamos el total calculado (si corresponde almacenarlo en una propiedad).
+        this.totalGeneral = totalGeneralCalculado;
+
         return resultado;
     }
 
@@ -179,12 +161,12 @@ public class CajaHistorica extends Identifiable implements Job {
             CajaHistorica cajaHistorica = new CajaHistorica();
             cajaHistorica.setFecha(new Date());
             cajaHistorica.setFechaCierre(LocalDate.now());
-            cajaHistorica.setTotalEntrada(totalEntrada);
-            cajaHistorica.setTotalSalida(totalSalida);
-            cajaHistorica.setBalance(cajaHistorica.getCalculaBalance());
-            cajaHistorica.setTotalGeneral(cajaHistorica.getCalculaTotalGeneral());
-            cajaHistorica.setHistoricoDeCaja(cajaHistorica.getHistoricoDeCajaCalculado());
-
+            cajaHistorica.setTotalEntrada(getCalculaTotalEntrada());
+            cajaHistorica.setTotalSalida(getCalculaTotalSalida());
+            cajaHistorica.setBalance(getCalculaBalance());
+            cajaHistorica.setHistoricoDeCaja(getHistoricoDeCajaCalculado());
+            cajaHistorica.setTotalGeneral(getTotalGeneral());
+            
             em.persist(cajaHistorica);
             em.getTransaction().commit();
         } catch (Exception e) {
